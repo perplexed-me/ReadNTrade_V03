@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profiles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@200;300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        
+        /* ... */
+        body {
+            background: #ABCDEF;
+            font-family: Assistant, sans-serif;
+            display: flex;
+            min-height: 90vh;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes jerk {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .jerk-page {
+            animation: jerk 0.3s ease-in-out;
+        }
+
+        .random-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 24px;
+            animation: randomMove 2s infinite linear;
+        }
+
+
+
+        .login {
+            color: white;
+            background: #136a8a;
+            background:
+                -webkit-linear-gradient(to right, #267871, #136a8a);
+            background:
+                linear-gradient(to right, #267871, #136a8a);
+            margin: auto;
+            box-shadow:
+                0px 2px 12px rgba(0, 0, 0, 0.2),
+                0px 10px 20px rgba(0, 0, 0, 0.3),
+                0px 30px 60px 1px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            padding: 65px;
+            animation: blink 0.15s ease-in-out;
+            animation: jerk 0.3s ease-in-out;
+        }
+
+        .login .l {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: jerk 0.3s ease-in-out;
+        }
+
+        .login .head .project {
+            font-size: 3em;
+        }
+
+        .login .welcome {
+            text-align: center;
+            font-size: 1.3em;
+            animation: jerk 0.3s ease-in-out;
+
+        }
+
+        .login .form-container input[type=text].text {
+            border: none;
+            background: none;
+            box-shadow: 0px 2px 0px 0px whitesmoke;
+            width: 100%;
+            color: wheat;
+            font-size: 1.5em;
+            outline: none;
+            animation: jerk 0.3s ease-in-out;
+
+        }
+
+        .login .form-container .text::placeholder {
+            color: #D3D3D3;
+
+        }
+
+        .login .form-container input[type=password].password {
+            border: none;
+            background: none;
+            box-shadow: 0px 2px 0px 0px white;
+            width: 100%;
+            color: wheat;
+            font-size: 1.5em;
+            outline: none;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            animation: jerk 0.3s ease-in-out;
+        }
+
+        .login .form-container .password::placeholder {
+            color: #D3D3D3;
+
+        }
+
+        .login .form-container .submit {
+            background: none;
+            text-decoration: none;
+            color: white;
+            box-shadow: 1px 1px 1px 2px white;
+            border-radius: 15px;
+            padding: 5px 1.5em;
+            transition: 0.5s;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            position: relative;
+            /* float: left; */
+            top: 5px;
+            left: 3px;
+            animation: jerk 0.3s ease-in-out;
+
+
+        }
+
+        .login .form-container .submit:hover {
+            background: rgb(240, 225, 225);
+            color: rgb(12, 16, 28);
+            transition: 0.5s;
+        }
+
+        .login .forgot {
+            text-decoration: none;
+            box-shadow: 0px 0px 0px 2px rgb(8, 6, 6);
+
+            padding: 6px 1.5em;
+            border-radius: 16px;
+            color: #eee2f0;
+            position: relative;
+
+            float: right;
+            animation: jerk 0.3s ease-in-out;
+        }
+
+        .login .forgot:hover {
+            background: rgb(190, 241, 224);
+            color: rgb(35, 35, 35);
+            transition: 0.5s;
+        }
+
+        footer {
+            position: absolute;
+            color: #136a8a;
+            bottom: 14px;
+            padding-left: 20px;
+        }
+
+        footer p {
+            display: inline;
+        }
+
+        footer a {
+            color: green;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer .heart {
+            color: #B22222;
+            font-size: 1.5em
+        }
+
+        /* Table styles below */
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: rgba(141, 247, 171, 0.923);
+        }
+
+        th,
+        td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+            color: #000000;
+        }
+
+        th {
+            background-color: rgb(251, 249, 249);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .hidden-password {
+            -webkit-text-security: disc;
+            cursor: pointer;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: #040404;
+        }
+
+        .table-container {
+            width: 70%;
+            margin: 3% auto;
+            border-radius: 8px;
+            padding: 2%;
+            background: #f3f6f7;
+            background:
+                -webkit-linear-gradient(to right, #267871, #136a8a);
+            background:
+                linear-gradient(to right, #267871, #136a8a);
+            box-shadow:
+                0px 2px 12px rgba(0, 0, 0, 0.2),
+                0px 10px 20px rgba(0, 0, 0, 0.3),
+                0px 30px 60px 1px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+
+    <script>
+        function togglePasswordVisibility(event) {
+            const target = event.target.closest('td');
+            if (target.classList.contains('hidden-password')) {
+                target.classList.remove('hidden-password');
+                target.querySelector('.fas').classList.replace('fa-eye-slash', 'fa-eye');
+            } else {
+                target.classList.add('hidden-password');
+                target.querySelector('.fas').classList.replace('fa-eye', 'fa-eye-slash');
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="table-container">
+        <h1>Profiles</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>User</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% profiles.forEach(profile=> { %>
+                    <tr>
+                        <td>
+                            <%= profile[0] %>
+                        </td>
+                        <td>
+                            <%= profile[2] %>
+                        </td>
+                        <td class="hidden-password" onclick="togglePasswordVisibility(event)">
+                            <%= profile[3] %> <i class="fas fa-eye-slash"></i>
+                        </td>
+                        <td>
+                            <%= profile[4] %>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

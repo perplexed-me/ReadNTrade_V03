@@ -1,0 +1,98 @@
+body{
+    background-color:#b7bfcb;
+}
+.my-link-style:hover{
+    text-decoration: underline;
+}
+.my-link-style{
+    font-size: 25px;
+}
+.navbar-brand{
+    font-size: 2rem;
+    color: black;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-family: 'Lobster', cursive;
+    font-family: 'Pacifico', cursive;
+}
+.navbar-brand:hover{
+    color: black;
+}
+.nav-link{
+    margin-right: 10px;
+    margin-left: 10px;
+    color: black;
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-family: 'Lobster', cursive;
+    font-family: 'Pacifico', cursive;
+}
+.nav-link:hover{
+    color: rgb(104, 87, 192);
+}
+.search{
+   height: 45px;
+   width: 80%;
+   border-radius: 20px ;
+   outline: none;
+   border: 2px solid #198754 ;
+   margin-right: 20px;
+   
+}
+.btn1{
+    height: 40px;
+    width: 9%;
+}
+.btn0{
+    height: 40px;
+    width: 20%;
+}
+.btn2{
+    height: 40px;
+}
+
+.btn1:hover{
+    height: 40px;
+    width: 9%;
+}
+.btn0:hover{
+    height: 40px;
+    width: 20%;
+}
+.btn2:hover{
+    height: 40px;
+}
+
+.bc {
+    background: url(./read.jpg) no-repeat;
+    background-size: cover;
+    min-height: 100vh; /* Use min-height to cover the full viewport height */
+    background-position: center;
+    width: 100%;
+}
+
+.last{
+    background-color: black;
+}
+.box1{
+    width: 600px;
+    align-items: start;
+    margin-left: 200px;
+    font-family: 'Alfa Slab One';
+    font-family: 'Anton', sans-serif;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: bolder;
+}
+
+.cool-email-name {
+    background: -webkit-linear-gradient(45deg, #f06, #9f6);
+    /* -webkit-background-clip: text; */
+    color: transparent;
+    text-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3); /* shadow effect */
+    font-weight: bold;
+    font-size: 1.2em; /* Make it a bit larger */
+    transition: transform 0.3s; /* For hover effect */
+}
+
+.cool-email-name:hover {
+    transform: scale(1.1); /* Make it scale up a bit on hover */
+}

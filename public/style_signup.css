@@ -1,0 +1,90 @@
+body {
+    background: #ABCDEF;
+    font-family: Assistant, sans-serif;
+    display: flex;
+    min-height: 80vh;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .form-container {
+    color: white;
+    background: #136a8a;
+    background: -webkit-linear-gradient(to right, #267871, #136a8a);
+    background: linear-gradient(to right, #267871, #136a8a);
+    box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.2),
+    0px 10px 20px rgba(0, 0, 0, 0.3),
+    0px 30px 60px 1px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    padding: 20px; /* Reduced padding here */
+    text-align: center;
+  }
+  
+  .form-container h1 {
+    font-size: 1.8em; /* Reduced font size here */
+    margin-bottom: 20px;
+  }
+  
+  .form-container input[type="text"],
+  .form-container input[type="email"],
+  .form-container input[type="password"] {
+    border: none;
+    background: none;
+    box-shadow: 0px 2px 0px 0px whitesmoke;
+    width: 100%;
+    color: wheat;
+    font-size: 1.3em; /* Reduced font size here */
+    outline: none;
+    margin-bottom: 15px; /* Reduced margin here */
+    padding: 6px;
+    border-radius: 5px;
+  }
+  
+  .form-container input::placeholder {
+    color: #D3D3D3;
+  }
+  
+  .form-container button[type="submit"] {
+    background: none;
+    text-decoration: none;
+    color: white;
+    box-shadow: 1px 1px 1px 2px white;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 1.5em; /* Reduced padding here */
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: 0.5s;
+  }
+  
+  .form-container button[type="submit"]:hover {
+    background: rgb(240, 225, 225);
+    color: rgb(12, 16, 28);
+  }
+  
+  footer {
+    position: absolute;
+    color: #136a8a;
+    bottom: 14px;
+    padding-left: 20px;
+  }
+  
+  footer p {
+    display: inline;
+  }
+  
+  footer a {
+    color: green;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  footer .heart {
+    color: #B22222;
+    font-size: 1.5em;
+  }
+  

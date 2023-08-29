@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          background: linear-gradient(to bottom, #17cfdf, #ff9933);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          text-align: center;
+        }
+      
+        .welcome {
+          background-color: rgba(255, 255, 255, 0.9);
+          border-radius: 20px;
+          padding: 40px;
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+          margin-bottom: 20px;
+        }
+      
+        .wel {
+          color: #035730;
+          font-size: 24px; 
+          margin-bottom: 10px; 
+        }
+      
+        .data {
+          background-color: rgba(210, 229, 131, 0.9);
+          border-radius: 20px;
+          padding: 20px; 
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+      
+        p {
+          color: #444444;
+          font-size: 16px; 
+          line-height: 1.4; 
+        }
+      
+        .accent-text {
+          color: #06520f;
+          font-weight: bold;
+        }
+
+        ul {
+          list-style-type: none; 
+          padding: 0; 
+        }
+
+        li {
+          margin-bottom: 8px; 
+          font-size: 14px; 
+        }
+      </style>
+</head>
+<body>
+    <div class="data">
+        <h1 id="wel">Welcome to the Dashboard</h1>
+        <ul>
+            <% queryData.forEach(item => { %>
+                <li><%= item[1] %></li>
+            <% }); %>
+        </ul>
+    </div>
+</body>
+</html>
