@@ -1,223 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ReadNTrade</title>
-
-
-
-  <link rel="icon" href="/rnt.png" type="image/x-icon" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-  <link rel="stylesheet" href="style_home.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300&family=Lobster&family=Pacifico&display=swap"
-    rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReadNTrade</title>
+    <link rel="icon" href="/imageS/rnt.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300&family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
 </head>
-
-<body class="bc">
-  <div>
-    <nav class="navbar navbar-expand-lg ">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img src="/icon.png" class="img-icon" alt="Responsive image" height="50px" width="50px">
-          ReadNTrade
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
-          aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse justify-content-end navbar-collapse" id="navbarScroll">
-          <ul class="navbar-nav m-auto my-2 my-lg-0">
-            <li class="nav-item">
-              <a class="nav-link " href="#">
-                <i class="fa-brands fa-sellcast"></i>
-                Sales
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link " href="#">
-                <i class="fa-solid fa-book"></i>
-                Add
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a class="nav-link " href="#">
-                <i class="fa-solid fa-message fa-bounce"></i>
-                Message
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link " href="#">
-                <i class="fa-solid fa-cart-shopping fa-beat"></i>
-                Cart
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link " href="/profile">
-                <!-- <a href="/profile" class="btn btn-primary">View Profile</a> -->
-
-                <i class="fa-solid fa-user"></i>
-                Profile
-              </a>
-            </li>
-          </ul>
-          <!--      -->
-          <form class="d-flex justify-content-end" id="myForm" action="/home" method="post">
-            <input class="me-2 search text-center mx-5" type="search" name="search" placeholder="Search"
-              aria-label="Search">
-            <input type="hidden" id="selectedOption" name="selectedOption" value="Title">
-            <div class="dropdown">
-              <button class="btn btn2 btn-success me-2" type="button" id="dropdownMenuButton" aria-haspopup="true"
-                aria-expanded="false">
-                Search by
-              </button>
-              <div class="dropdown-menu" name="dropdown" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#" onclick="setDropdownSelection('Title'); return false;">Title</a>
-                <a class="dropdown-item" href="#"
-                  onclick="setDropdownSelection('AuthorName'); return false;">AuthorName</a>
-                <a class="dropdown-item" href="#"
-                  onclick="setDropdownSelection('PublisherName'); return false;">PublisherName</a>
-                <a class="dropdown-item" href="#"
-                  onclick="setDropdownSelection('PublicationYear'); return false;">PublicationYear</a>
-              </div>
-            </div>
-            <button class="btn btn0 btn-success " id="btn" type="submit">Submit</button>
-          </form>
-
-          <script>
-            document.getElementById("dropdownMenuButton").addEventListener("mouseover", function () {
-              document.querySelector(".dropdown-menu").classList.add("show");
-            });
-
-            // when cursour is out of dropdown area
-            document.querySelector(".dropdown").addEventListener("mouseout", function (event) {
-              if (!event.relatedTarget || !event.currentTarget.contains(event.relatedTarget)) {
-                document.querySelector(".dropdown-menu").classList.remove("show");
-              }
-            });
-
-
-            // Handle the setDropdownSelection function
-            function setDropdownSelection(value) {
-              document.getElementById('selectedOption').value = value;
-             
-              // document.getElementById("myForm").submit();
-              // document.getElementById("btn").click();
-    
-              
-            }
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function (event) {
-              const dropdown = document.querySelector('.dropdown');
-              if (!dropdown.contains(event.target)) {
-                document.querySelector(".dropdown-menu").classList.remove("show");
-              }
-            });
-          </script>
-
-          <!--  -->
-          <form action="/logout" method="post" class="d-inline-block">
-            <button class="btn btn1 btn-success mx-3" type="submit">
-              Log Out
-            </button>
-          </form>
-
-        </div>
-      </div>
-    </nav>
-    <!--   searched item      -->
-    <div class="container box1 text-primary mt-5 bg-light rounded shadow">
-      <% if (object && object.length> 0) { %>
-        <div class="mb-4">
-          <h4 class="text-success">Books for Sale:</h4>
-        </div>
-        <ul class="list-group list-group-flush">
-          <% for (let i=0; i < object.length; i++) { %>
-            <li class="list-group-item bg-white rounded mb-3 shadow-sm">
-              <a href="#" class="stretched-link" style="text-decoration: none;">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-4">
-                      <p>Book name:</p>
-                    </div>
-                    <div class="col-8 text-primary">
-                      <p>
-                        <%= object[i][0] %>
-                      </p>
-                    </div>
-                  </div>
-                  <div class="book-details" style="display: none;">
-                    <!-- Remaining book details -->
-                    <% ['Author', 'Publisher' , 'Year' , 'Price' , 'Seller Name' , 'Discount' ].forEach((label, index)=>
-                      { %>
-                      <div class="row">
-                        <div class="col-4 <%= label === 'Discount' ? 'text-success' : '' %>">
-                          <p>
-                            <%= label %>:
-                          </p>
-                        </div>
-                        <div class="col-8 <%= label === 'Discount' ? 'text-danger' : '' %>">
-                          <p>
-                            <%= object[i][index + 1] %>
-                          </p>
-                        </div>
-                      </div>
-                      <% }) %>
-                  </div>
+<body class="bc" >
+  <% let addtoCart="Add to Cart";   %>
+    <div >
+      <nav class="navbar navbar-expand-lg ">
+        <div class="container">
+          <a class="navbar-brand" href="/home">
+            <img src="/imageS/icon.png" class="img-icon" alt="Responsive image" height="50px" width="50px">
+            ReadNTrade
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse justify-content-end navbar-collapse" id="navbarScroll">
+            <ul class="navbar-nav m-auto my-2 my-lg-0">
+              <li class="nav-item">
+                <a class="nav-link " href="/sales">
+                    <i class="fa-brands fa-sellcast"></i>
+                    Sales
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="/add" >
+                    <i class="fa-solid fa-book"></i>
+                    Add 
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="/chat">
+                    <i class="fa-solid fa-message fa-bounce"></i>
+                    Message
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="/cart" >
+                    <i class="fa-solid fa-cart-shopping fa-beat"></i>
+                    Cart
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " href="/profile" >
+                    <i class="fa-solid fa-user"></i> 
+                    Profile
+                </a>
+              </li>
+            </ul>
+            <form class="d-flex justify-content-end" action="/home" method="post" >
+              <input class="me-2 search text-center mx-5" type="search" name="search" placeholder="Search" aria-label="Search">
+              <input type="hidden" id="selectedOption" name="selectedOption" value="Title">
+              <div class="dropdown">
+                <button class="btn btn2 btn-success me-2 dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Search by
+                </button>
+                <div class="dropdown-menu" name="dropdown" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#" onclick="setDropdownSelection('Title')">Title</a>
+                    <a class="dropdown-item" href="#" onclick="setDropdownSelection('AuthorName')">AuthorName</a>
+                    <a class="dropdown-item" href="#" onclick="setDropdownSelection('PublisherName')">PublisherName</a>
+                    <a class="dropdown-item" href="#" onclick="setDropdownSelection('PublicationYear')">PublicationYear</a>
                 </div>
-              </a>
-            </li>
-            <% } %>
-        </ul>
-        <% } else { %>
-          <h4 class="text-center mt-5 text-success">
-            Hi <span class="cool-email-name">
-              <%= emailName %>
-            </span>!
-          </h4>
+            </div>
+              <button class="btn btn0 btn-success " type="submit">Submit</button>
+            </form>
+            <form action="/logout" method="post" class="d-inline-block">
+              <button class="btn btn1 btn-success mx-3" type="submit">
+                Log Out
+              </button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      
+      <div class="container box1 text-primary">
+        <% if(decide!=0){ %>
+          <% if (object.length > 0) { %>
+            <div>
+              <h4>Search Results :</h4>
+            </div>
+              <ul class="list-group list-group-flush">
+                  <% for (let i = 0; i < object.length; i++) { %>
+                        <li class="list-group-item">
+                          <div class="container">
+                              <div class="row">
+                                  <div class="col-3">
+                                      <p>Book name:</p>
+                                  </div>
+                                  <div class="col-7">
+                                    <p><%= object[i][0] %></p>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3">
+                                  <p>Author: </p>
+                                </div>
+                                <div class="col-7">
+                                  <p><%= object[i][1] %></p>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3">
+                                  <p>Publisher: </p>
+                                </div>
+                                <div class="col-7">
+                                  <p> <%= object[i][2] %></p>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3">
+                                  <p>Year: </p> 
+                                </div>
+                                <div class="col-7">
+                                  <p><%= object[i][3] %></p>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3">
+                                  <p>Price: </p> 
+                                </div>
+                                <div class="col-7">
+                                  <p><%= object[i][4] %></p>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3">
+                                  <p>Seller Name: </p> 
+                                </div>
+                                <div class="col-7">
+                                  <p><%= object[i][5] %></p>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-3">
+                                  <p>Discout(%): </p> 
+                                </div>
+                                <div class="col-7">
+                                  <p><%= object[i][6] %></p>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-7">
+                                  <form class="d-flex justify-content-center" action="/addCart" method="post" >
+                                    <input type="hidden" id="title" name="title" value="<%=object[i][0]%>">
+                                    <input type="hidden" id="userID" name="userID" value="<%=object[i][7]%>">
+                                    <input type="hidden" id="iterator" name="iterator" value="<%=i%>">
+                                    <%if(i!=iterators){%>
+                                      <button class="btn btn-success " id="cart"  type="submit"><%=addtoCart %></button>
+                                    <%}else{%>
+                                      <button class="btn btn-success " id="cart"  type="submit" disabled>Added to Cart</button>
+                                    <%}%>
+                                  </form>
+                                </div>
+                              </div>
+                          </div>
+                        </li>
+                  <% } %>
+              </ul>
+          <% } else{ %>
+                  <h4>No Results Found</h4>
           <% } %>
-    </div>
-
-    <!-- JavaScript to handle the interactivity -->
+        <% } %>
+      </div>
+    </div> 
     <script>
-      document.querySelectorAll('.list-group-item').forEach(item => {
-        item.addEventListener('click', function (e) {
-          const details = e.currentTarget.querySelector('.book-details');
-          details.style.display = details.style.display === 'none' ? '' : 'none';
-        });
-      });
+        function setDropdownSelection(selectedOption) {
+            const dropdownButton = document.getElementById('dropdownMenuButton');
+            const hiddenInput = document.getElementById('selectedOption');
+            dropdownButton.textContent = selectedOption;
+            hiddenInput.value = selectedOption;
+        }
+
+        function setButtonObject(){
+          const cartd=document.getElementById("cart");
+          cartd.innerHTML="Added to Cart";
+        }
     </script>
-
-    <style>
-      .list-group-item:hover {
-        background-color: #7ce852;
-        transform: scale(1.02);
-        transition: transform 0.3s ease;
-      }
-    </style>
-
-    <!--           -->
-    <script>
-      function setDropdownSelection(selectedOption) {
-        const dropdownButton = document.getElementById('dropdownMenuButton');
-        const hiddenInput = document.getElementById('selectedOption');
-
-        dropdownButton.textContent = selectedOption;
-        hiddenInput.value = selectedOption;
-      }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-      crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
-
 </html>

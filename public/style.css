@@ -176,3 +176,36 @@ footer .heart {
   color: #B22222;
   font-size: 1.5em
 }
+/* table */
+/* Apply a smooth hover effect to table rows */
+table tr:hover {
+  background-color: #f5f5f5; /* Change to the color you prefer */
+  transition: background-color 0.3s ease;
+  border-radius: 100px;
+}
+
+/* Apply a cool table border with a shadow and circular corners */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px; /* Add circular corners */
+}
+
+/* Style table rows and cells */
+/* table tr {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+} */
+
+table th, table td {
+  padding: 8px;
+  text-align: left;
+  /* border-radius: 100px; */
+}
+
+/* Apply a subtle box-shadow on hover to create depth */
+table tr:hover {
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+  /* border-radius: 100px; */
+}

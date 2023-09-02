@@ -1,0 +1,46 @@
+<!-- sendmessage.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    <div id="chatWindow">
+        <!-- Display messages here -->
+    </div>
+    <form id="sendMessageForm">
+        <input type="text" id="message" name="message" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const chatID = "<%= chatID %>"; 
+
+        // Handle sending messages
+        document.getElementById('sendMessageForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const message = document.getElementById('message').value;
+            socket.emit('send message', { chatID, message });
+            document.getElementById('message').value = ''; // Clear the input field
+        });
+
+        // Handle receiving messages
+        socket.on('receive message', (data) => {
+            const chatWindow = document.getElementById('chatWindow');
+        const messageElement = document.createElement('p');
+        const isForCurrentUser = data.recipientUserID === currentUserID; // Check if the message is for the current user
+        messageElement.textContent = `${data.message} - ${data.msz_time}`;
+
+        if (isForCurrentUser) {
+            messageElement.style.fontWeight = 'bold'; // Apply a style to distinguish messages for the current user
+        }
+
+        chatWindow.appendChild(messageElement);
+    
+        });
+    </script>
+</body>
+</html>

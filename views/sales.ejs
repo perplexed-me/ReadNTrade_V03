@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="rnt.png" type="image/x-icon"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="style1.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300&family=Lobster&family=Pacifico&display=swap" rel="stylesheet">
+    <title>ReadNTrade</title>
+</head>
+<body class="bc">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg ">
+            <div class="container">
+              <a class="navbar-brand" href="/sales">
+                <img src="/imageS/icon.png" class="img-icon" alt="Responsive image" height="50px" width="50px">
+                ReadNTrade
+              </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse justify-content-end navbar-collapse" id="navbarScroll">
+                <ul class="navbar-nav m-auto my-2 my-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link " href="/Home">
+                        <i class="fa-solid fa-house"></i>
+                        Home
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link " href="/add" >
+                      <i class="fa-solid fa-book"></i>
+                        Add 
+                    </a>
+                  </li>
+                  <li class="nav-item ">
+                    <a class="nav-link " href="/chat">
+                        <i class="fa-solid fa-message fa-bounce"></i>
+                        Message
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link " href="/cart" >
+                        <i class="fa-solid fa-cart-shopping fa-beat"></i>
+                        Cart
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link " href="/profile" >
+                        <i class="fa-solid fa-user"></i> 
+                        Profile
+                    </a>
+                  </li>
+                </ul>
+                <form action="/logout" method="post" class="d-inline-block">
+                  <button class="btn btn1 btn-success mx-3" type="submit">
+                    Log Out
+                  </button>
+                </form>
+              </div>
+            </div>
+          </nav>
+          <div class="container">
+            <div class="row">
+              <div class="col-4">
+                <div class="div3">
+                  <h2 class="text-start fw-bold fs-1" style="margin-top: 20px;">
+                    On Sale
+                  </h2>
+                  
+                  
+                </div>
+                <% if (decide != 0) { %>
+                  <% if (object) { %>
+                    <% for (let i = 0; i < object.length; i++) { %>
+                      <p class="text-center">
+                        <div class="image-container text-center">
+                          <img src="<%= object[i][6] %>" alt="image1<%= i %>">
+                          <img class="default-image img1"  src="/imageS/default.png" alt="Default Image" style="display: none;">
+                        </div> 
+                        <button class="btn btn4 btn-transparent mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample<%=i%>" aria-expanded="false" aria-controls="collapseExample<%=i%>">
+                          <%=object[i][0] %>
+                        </button>
+                      </p>
+                      <div class="collapse" id="collapseExample<%=i%>">
+                        <div class="card card1 card-body">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Author: </p>
+                            </div>
+                            <div class="col-7">
+                              <p><%= object[i][1] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Publisher: </p>
+                            </div>
+                            <div class="col-7">
+                              <p> <%= object[i][2] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Year: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object[i][3] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Price: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object[i][4] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Discount(%): </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object[i][5] %></p>
+                            </div>
+                          </div>
+                          <form class="d-flex justify-content-center" action="/sales" method="post" >
+                            <input type="hidden" id="remove"  name="remove" value="<%=object[i][0]%>">
+                            <button class="btn btn0 btn-transparent" type="submit">
+                              <i class="fa-solid fa-trash fa-bounce fa-2xl"></i>
+                            </button>
+                          </form>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% } %>
+                <% } %>
+              </div>
+              <div class="col-4">
+                <div class="div3">
+                  <h2 class=" text-start fw-bold fs-1" style="margin-top: 20px;">
+                    &nbsp;&nbsp;&nbsp;Sold
+                  </h2>
+                </div>
+                <% if (decide != 0) { %>
+                  <% if (object1) { %>
+                    <% for (let i = 0; i < object1.length; i++) { %>
+                      <p class="text-center">
+                          <div class="image-container text-center">
+                              <img src="<%= object1[i][7] %>" alt="image1<%= i %>">
+                              <img class="default-image img1" src="/imageS/default.png" alt="Default Image" style="display: none;">
+                          </div>                   
+                        <button class="btn btn4 btn-transparent mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExamplee<%=i%>" aria-expanded="false" aria-controls="collapseExample<%=i%>">
+                          <%=object1[i][0] %>
+                        </button>
+                      </p>
+                      <div class="collapse" id="collapseExamplee<%=i%>">
+                        <div class="card card1 card-body">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Author: </p>
+                            </div>
+                            <div class="col-7">
+                              <p><%= object1[i][1] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Publisher: </p>
+                            </div>
+                            <div class="col-7">
+                              <p> <%= object1[i][2] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Year: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object1[i][3] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Buyer: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object1[i][4] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Delivered to: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object1[i][5] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Price: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object1[i][6] %></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% } %>
+                <% } %>
+              </div>
+              <div class="col-4">
+                <div class="div3">
+                  <h2 class=" text-start fw-bold fs-1" style="margin-top: 20px;">
+                    Ordered
+                  </h2>
+                </div>
+                <% if (decide != 0) { %>
+                  <% if (object2) { %>
+                    <% for (let i = 0; i < object2.length; i++) { %>
+                      <p class="text-center">
+                        <div class="image-container text-center">
+                          <img src="<%= object2[i][6] %>" alt="imagge1<%= i %>">
+                          <img class="default-image img1" src="/imageS/default.png" alt="Default Image" style="display: none;">
+                        </div> 
+                        <button class="btn btn4 btn-transparent mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExampleee<%=i%>" aria-expanded="false" aria-controls="collapseExample<%=i%>">
+                          <%=object2[i][0] %>
+                        </button>
+                      </p>
+                      <div class="collapse" id="collapseExampleee<%=i%>">
+                        <div class="card card1 card-body">
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Author: </p>
+                            </div>
+                            <div class="col-7">
+                              <p><%= object2[i][1] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Publisher: </p>
+                            </div>
+                            <div class="col-7">
+                              <p> <%= object2[i][2] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Year: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object2[i][3] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Seller: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object2[i][4] %></p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-3">
+                              <p>Price: </p> 
+                            </div>
+                            <div class="col-7">
+                              <p><%= object2[i][5] %></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% } %>
+                <% } %>
+              </div>           
+            </div>
+          </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script>
+      const imageContainers = document.querySelectorAll('.image-container');
+  
+      imageContainers.forEach((container) => {
+          const img = container.querySelector('img');
+          const defaultImage = container.querySelector('.default-image');
+  
+          img.addEventListener('load', () => {
+              if (!img.complete || img.naturalWidth <50 ) {
+                  defaultImage.style.display = 'block';
+                  img.style.display = 'none';
+              }
+          });
+  
+          img.addEventListener('error', () => {
+              defaultImage.style.display = 'block';
+              img.style.display = 'none';
+          });
+      });
+  </script>
+  <script>
+    function remove(value){
+        const removeIcon=document.getElementById('remove');
+        removeIcon.value=value;
+    }
+  </script>
+</body>
+</html>
+
+
+
+<!--                       B.title AS book_title,
+                            A.authorName AS author_name,
+                            P.publisherName AS publisher,
+                            B.publicationYear AS publication_year,
+                            U_buyer.username AS buyer_name,
+                            L.district || ', ' || L.division AS location_name,
+                            O.price-->

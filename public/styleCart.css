@@ -1,0 +1,167 @@
+/* Reset some default styles */
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color for the body */
+body {
+    background-color: #b7bfcb;
+}
+
+/* Style the table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Style links */
+.my-link-style:hover {
+    text-decoration: underline;
+}
+
+.my-link-style {
+    font-size: 25px;
+}
+
+/* Style the navbar brand */
+.navbar-brand {
+    font-size: 2rem;
+    color: black;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-family: 'Lobster', cursive;
+    font-family: 'Pacifico', cursive;
+}
+
+.navbar-brand:hover {
+    color: black;
+}
+
+/* Style nav links */
+.nav-link {
+    margin-right: 10px;
+    margin-left: 10px;
+    color: black;
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-family: 'Lobster', cursive;
+    font-family: 'Pacifico', cursive;
+}
+
+.nav-link:hover {
+    color: rgb(104, 87, 192);
+}
+
+/* Style search input */
+.search {
+    height: 45px;
+    width: 80%;
+    border-radius: 20px;
+    outline: none;
+    border: 2px solid #198754;
+    margin-right: 20px;
+}
+
+/* Style buttons */
+.btn1, .btn0, .btn2, .btn3 {
+    height: 40px;
+}
+
+.btn0 {
+    width: 20%;
+}
+
+.btn1:hover, .btn0:hover, .btn2:hover {
+    height: 40px;
+}
+
+.btn3 {
+    width: 20%;
+    margin-top: 20px;
+    margin-left: 450px;
+}
+
+/* Style the background */
+.bc {
+    background: url(./read.jpg) no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    background-position: center;
+    width: 100%;
+}
+
+/* Style the last section */
+.last {
+    background-color: black;
+}
+
+/* Style box1 */
+.box1 {
+    width: 1000px;
+    align-items: start;
+    margin-left: 200px;
+    font-family: 'Alfa Slab One', 'Anton', sans-serif;
+    font-weight: bolder;
+}
+
+/* Style add1 */
+.add1 {
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Anton', sans-serif;
+}
+
+/* Style add2 */
+.add2 {
+    margin-top: 100px;
+}
+
+/* Style add3 */
+.add3 {
+    margin-left: 1000;
+}
+
+/* Style form group */
+.form-group {
+    font-family: 'Alfa Slab One', cursive;
+    font-family: 'Anton', sans-serif;
+}
+
+/* Style list group item */
+.list-group-item {
+    background-color: transparent;
+    border-width: 32px solid #042ad5;
+    border-radius: 0;
+}
+
+/* Style div3 */
+.div3 {
+    margin-inline-start: 130px;
+}
+
+/* Style card1 */
+.card1 {
+    width: 400px;
+    height: fit-content;
+    background: transparent;
+}
+
+/* Style img1 */
+.img1 {
+    align-items: center;
+    margin-left: 100px;
+}
+
+/* Style he1 */
+.he1 {
+    font-family: 'Ubuntu', sans-serif;
+}

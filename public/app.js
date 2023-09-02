@@ -1,4 +1,4 @@
-// const axios = require('axios')
+
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -12,7 +12,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   try {
     const response = await axios.post('http://localhost:3000/login', data);
-    console.log(response.data)
+    // console.log(response.data)
     if (response.data && response.status === 200) {  // Check for a specific condition to ensure login success
       window.location.href = '/home';
     }
@@ -43,7 +43,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
   const data = {
-    // username: formData.get('username'),
+    username: formData.get('username'),
     email: formData.get('email'),
     password: formData.get('password')
   };
@@ -64,4 +64,24 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     alert('An error occurred during sign up.');
   }
 });
+
+
+
+async function sendMessage(chatID, message) {
+  try {
+      const response = await axios.post('/sendmessage', {
+          chatID,
+          message
+      });
+
+      if (response.data && response.status === 200) {
+          console.log(response.data.message); // Display a success message
+      } else {
+          console.error('Message sending failed.');
+      }
+  } catch (error) {
+      console.error('Error sending message:', error);
+  }
+}
+
 

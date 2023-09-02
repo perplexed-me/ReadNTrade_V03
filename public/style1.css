@@ -1,0 +1,142 @@
+/* Set a cool and straight font for the body */
+body {
+    background-color: #b7bfcb;
+    font-family: 'Roboto', sans-serif; /* Use a straight and cool font like Roboto */
+}
+
+/* Apply an underline effect to links on hover */
+.my-link-style:hover {
+    text-decoration: underline;
+}
+
+.my-link-style {
+    font-size: 25px;
+    color: #333; /* Set a cool text color */
+}
+
+/* Style the navbar brand with a cool font and interactive color */
+.navbar-brand {
+    font-size: 2rem;
+    color: black;
+    font-family: 'Roboto', sans-serif; /* Use the same cool font for consistency */
+}
+
+.navbar-brand:hover {
+    color: #333; /* Change to a cool hover color */
+}
+
+/* Style nav links with cool fonts and spacing */
+.nav-link {
+    margin-right: 10px;
+    margin-left: 10px;
+    color: black;
+    font-family: 'Roboto', sans-serif; /* Use the same cool font for consistency */
+}
+
+.nav-link:hover {
+    color: rgb(104, 87, 192);
+}
+
+/* Style the search input */
+.search {
+    height: 45px;
+    width: 80%;
+    border-radius: 20px;
+    outline: none;
+    border: 2px solid #198754;
+    margin-right: 20px;
+}
+
+/* Style the buttons with cool hover effects */
+.btn1, .btn0, .btn2, .btn3 {
+    height: 40px;
+}
+
+.btn0 {
+    width: 20%;
+}
+
+.btn1:hover, .btn0:hover, .btn2:hover, .btn3:hover {
+    background-color: #198754; /* Change to a cool hover background color */
+    color: white; /* Change to a cool hover text color */
+    border-color: #198754; /* Change to a cool hover border color */
+}
+
+/* Style the background */
+.bc {
+    background: url(./read.jpg) no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    background-position: center;
+    width: 100%;
+}
+
+/* Style the last section with a cool background color */
+.last {
+    background-color: #333; /* Change to a cool background color */
+    color: white; /* Set cool text color */
+}
+
+/* Style the container for improved positioning */
+.container {
+    position: relative;
+}
+
+/* Style box1 with cool fonts and positioning */
+.box1 {
+    max-width: 1000px; /* Adjust to your preferred width */
+    margin: 0 auto; /* Center align the box */
+    font-family: 'Roboto', sans-serif; /* Use the same cool font for consistency */
+    font-weight: bold;
+}
+
+/* Style add1 with cool fonts */
+.add1 {
+    font-family: 'Roboto', sans-serif; /* Use the same cool font for consistency */
+}
+
+/* Style add2 with improved margin */
+.add2 {
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+/* Style add3 with improved margin-left */
+.add3 {
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+
+/* Style form-group with cool fonts */
+.form-group {
+    font-family: 'Roboto', sans-serif; /* Use the same cool font for consistency */
+}
+
+/* Style list-group-item with a cool border */
+.list-group-item {
+    border: 2px solid #198754; /* Set a cool border */
+    border-radius: 20px; /* Add rounded corners */
+}
+
+/* Style div3 with improved margin */
+.div3 {
+    margin-left: 20px; /* Adjust the margin as needed */
+}
+
+/* Style card1 with cool background and shadow */
+.card1 {
+    width: 400px;
+    padding: 20px;
+    background-color: #f5f5f5; /* Set a cool background color */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+/* Style img1 with improved margin */
+.img1 {
+    margin-left: auto;
+    margin-right: auto;
+    display: block; /* Center align the image */
+}
+
+/* Style he1 with cool fonts */
+.he1 {
+    font-family: 'Roboto', sans-serif; /* Use the same cool font for consistency */
+}

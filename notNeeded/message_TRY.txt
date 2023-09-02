@@ -1,0 +1,84 @@
+app.get('/startchat', isAuthenticated, (req, res) => {
+    // Render the start chat page
+    res.render('startchat.ejs');
+});
+
+app.get('/sendmessage/:chatID', isAuthenticated, async (req, res) => {
+    const { chatID } = req.params;
+    
+    try {
+        // Fetch chat details or other relevant data if needed
+        // For example, you might fetch participants, chat name, etc.
+
+        // Render the sendmessage.ejs template and pass any necessary data
+        res.render('sendmessage', { chatID });
+    } catch (error) {
+        console.error('Error fetching chat details:', error);
+        res.status(500).send('An error occurred while fetching chat details.');
+    }
+});
+
+
+app.post('/startchat', async (req, res) => {
+    const { receiverID } = req.body;
+    const senderID = req.session.user.userID;
+
+    try {
+
+        let fetchChatIDQuery = `SELECT messageID FROM Chat WHERE senderID = :senderID AND receiverID = :receiverID`;
+        let chatIDResult = await runQuery(fetchChatIDQuery, { senderID, receiverID });
+        if (!chatIDResult.length > 0) {
+            let chatInsertQuery = `INSERT INTO Chat (senderID, receiverID, messageID) VALUES (:senderID, :receiverID, chat_message_seq.NEXTVAL)`;
+            await runQuery(chatInsertQuery, { senderID, receiverID });
+            fetchChatIDQuery = `SELECT messageID FROM Chat WHERE senderID = :senderID AND receiverID = :receiverID`;
+            chatIDResult = await runQuery(fetchChatIDQuery, { senderID, receiverID });
+        }
+        console.log(chatIDResult)
+        const chatID = chatIDResult[0][0];
+
+        // Redirect to the chat room or show a success message
+        res.redirect(`/sendmessage/${chatID}`);
+    } catch (error) {
+        console.error('Error starting chat:', error);
+        res.status(500).json({ message: 'An error occurred starting the chat.' });
+    }
+});
+
+
+// Add these routes to your Express app
+
+// Send a message
+app.post('/sendmessage', async (req, res) => {
+    const { chatID, message } = req.body;
+    const msz_time = new Date();
+
+    try {
+        // Insert the message into the database
+        const messageQuery = `INSERT INTO Message (messageID, text, msz_time) VALUES (:chatID, :message, :msz_time)`;
+        await runQuery(messageQuery, { chatID, message, msz_time });
+
+        // Emit the message to all connected clients
+        io.emit('receive message', { chatID, message, msz_time });
+
+        res.json({ message: "Message sent successfully." });
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).json({ message: 'An error occurred sending the message.' });
+    }
+});
+
+// Fetch chat history
+app.get('/getchat/:chatID', isAuthenticated, async (req, res) => {
+    const { chatID } = req.params;
+
+    try {
+        const fetchChatQuery = `SELECT text, msz_time FROM Message WHERE messageID = :chatID ORDER BY msz_time ASC`;
+        const chatData = await runQuery(fetchChatQuery, { chatID });
+
+        res.json({ chatData });
+    } catch (error) {
+        console.error('Error fetching chat:', error);
+        res.status(500).json({ message: 'An error occurred fetching the chat.' });
+    }
+});
+
