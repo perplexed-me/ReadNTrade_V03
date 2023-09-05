@@ -1,19 +1,36 @@
+//############################################################
+//              CientSide
+//############################################################
+
+let userID;
+let userName;
+
+
+//############################################################
+//              login 
+//############################################################
 
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const formData = new FormData(e.target);
+
   const data = {
     email: formData.get('email'),
     password: formData.get('password')
   };
-  // console.log(data)
+  
 
   try {
-    const response = await axios.post('http://localhost:3000/login', data);
-    // console.log(response.data)
-    if (response.data && response.status === 200) {  // Check for a specific condition to ensure login success
+    const response = await axios.post('/login', data);
+  
+    //name from response
+    userID = response.data[0][0]
+    userName = response.data[0][4] +' '+ response.data[0][5]
+    // console.log(userID+' '+userName)
+    
+    if (response.data && response.status === 200) { 
       window.location.href = '/home';
     }
     else {
@@ -34,7 +51,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
 
 
-//---------------------------------------------------------------------------------
+//############################################################
+//               sign up 
+//############################################################
 
 
 
@@ -65,23 +84,21 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   }
 });
 
+//############################################################
+//              login clientSide
+//############################################################
 
 
-async function sendMessage(chatID, message) {
-  try {
-      const response = await axios.post('/sendmessage', {
-          chatID,
-          message
-      });
+//############################################################
+//              login clientSide
+//############################################################
 
-      if (response.data && response.status === 200) {
-          console.log(response.data.message); // Display a success message
-      } else {
-          console.error('Message sending failed.');
-      }
-  } catch (error) {
-      console.error('Error sending message:', error);
-  }
-}
+
+
+
+//############################################################
+//              login clientSide
+//############################################################
+
 
 

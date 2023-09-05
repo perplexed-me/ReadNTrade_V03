@@ -4,15 +4,18 @@ const path = require('path');
 const oracledb = require('oracledb');
 const cors = require('cors');
 const session = require('express-session');
+const { Server } = require('socket.io');
 
-// email id
-let userID;
-let name 
 
 const dbConfig = {
     user: 'ReadNTrade',
     password: 'hr',
-    connectString: 'localhost/orclpdb1'
+    connectString: 'localhost/orclpdb1',
+    poolMax: 20,
+    poolMin: 10,
+    poolIncrement: 2,
+    poolTimeout: 300,
+    queueTimeout: 60000
 };
 
 
@@ -103,191 +106,34 @@ async function runQuery(queryR, bind) {
 }
 
 
-
-
-
-
-//############################################################
-//             GET METHOD
-//############################################################
-
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-app.get('/signup', (req, res) => {
-    res.render('signup');
-});
-
-app.get('/index', (req, res) => {
-    res.render('index');
-});
-
-app.get('/hey', (req, res) => {
-    res.render('hey');
-});
-
-app.get('/dashboard', isAuthenticated, async (req, res) => {
+async function runQueries(queries, bindParams) {
+    let connection;
     try {
-        const queryR = `SELECT * FROM locations`;
-        const queryData = await runQuery(queryR, []);
-        res.render('dashboard', { queryData });
+        connection = await connectionPool.getConnection();
+
+        const results = await Promise.all(queries.map(query => connection.execute(query, bindParams)));
+
+        // Check if any of the queries were modifying the database and hence need a commit
+        const needCommit = queries.some(query => !query.trim().toLowerCase().startsWith('select'));
+        if (needCommit) {
+            await connection.commit();
+        }
+
+        // Return the rows from each result
+        return results.map(result => result.rows);
     } catch (error) {
-        console.error('Error while fetching data:', error);
-        res.status(500).send('An error occurred while fetching data.');
-    }
-});
-
-// app.get('/profile', isAuthenticated, async (req, res) => {
-//     const userEmail = req.session.user.email;  // Fetch the email from the session
-
-//     try {
-//         const query = `SELECT * FROM users WHERE email=:email`;
-//         const profiles = await runQuery(query, { email: userEmail });
-//         // console.log(profiles)
-//         if (profiles.length > 0) {
-//             res.render('profile', { profiles });
-//         } else {
-//             res.status(404).send("User profiles not found");
-//         }
-//     } catch (error) {
-//         console.error('Error fetching profiles:', error);
-//         res.status(500).send('An error occurred while fetching profile data.');
-//     }
-// });
-
-app.get('/profile',async(req,res)=>{
-    try {
-        // let data=req.session.profiles;
-        // console.log('here1 '+data)
-        //userID=106;
-        // userID = data[0][0]
-
-        const connection = await connectionPool.getConnection();
-        const bindParams={
-            UserID:{val:userID,type:oracledb.NUMBER},
-        };
-        const query1=`SELECT u.FIRSTNAME||' '||u.LASTNAME AS Name, 
-                      u.EMAIL,l.DISTRICT,l.DIVISION FROM USERS u 
-                      LEFT JOIN LOCATIONS l ON u.LOCATIONID = l.LOCATIONID 
-                      WHERE u.UserID=:UserID`;
-        const query2=`SELECT  SUM(PRICE) FROM ORDERS GROUP BY SELLERID
-                      HAVING  SELLERID =:UserID `;
-        const query3=`SELECT  COUNT(BOOKID) FROM ORDERS GROUP BY SELLERID
-                      HAVING SELLERID =:UserID `;
-        const query4=`SELECT  COUNT(BOOKID) FROM SELLS GROUP BY SELLERID 
-                      HAVING SELLERID=:UserID `;
-        const query5=`SELECT  COUNT(BOOKID) FROM ORDERS GROUP BY BUYERID 
-                      HAVING BUYERID=:UserID `;
-        const result1 = await connection.execute(query1,bindParams);
-        const result2 = await connection.execute(query2,bindParams);
-        const result3 = await connection.execute(query3,bindParams);
-        const result4 = await connection.execute(query4,bindParams);
-        const result5 = await connection.execute(query5,bindParams);
-        console.log(result1.rows[0]);
-        console.log(result2.rows[0]);
-        console.log(result3.rows[0]);
-        console.log(result4.rows[0]);
-        res.render('profile',{
-            detail: result1.rows,
-            money: result2.rows ||0,
-            soldCount: result3.rows ||0,
-            toSellcount: result4.rows || 0,
-            orderCount : result5.rows ||0,
-        });
-    } catch (err) {
-        res.send(err.message);
-    }
-    
-});
-
-app.post('/profile',async(req,res)=>{
-    try {
-        // userID=104;
-        // userID = data[0][0]
-
-        const fname=req.body.cngfname;
-        const lname=req.body.cnglname;
-        const email=req.body.cngmail;
-        const division=req.body.division;
-        const district=req.body.district;
-
-        const connection = await connectionPool.getConnection();
-        
-        if(fname!=undefined && lname!=undefined){
-            const bindParams1={
-                UserID:{val:userID,type:oracledb.NUMBER},
-                fName:{val:fname,type:oracledb.STRING},
-                lName:{val:lname,type:oracledb.STRING},
+        console.error('Error while running query:', error);
+        throw error;
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (error) {
+                console.error('Error while closing connection:', error);
             }
-            const query0=`UPDATE USERS
-                          SET FIRSTNAME = :fName,
-                              LASTNAME =:lName
-                          WHERE USERID=:UserID`;
-            const result0 = await connection.execute(query0,bindParams1,{autoCommit:true});
         }
-        if(email!=undefined){
-            const bindParams1={
-                UserID:{val:userID,type:oracledb.NUMBER},
-                Email:{val:email,type:oracledb.STRING},
-            }
-            const query0=`UPDATE USERS
-                          SET EMAIL = :Email
-                          WHERE USERID=:UserID`;
-            const result0 = await connection.execute(query0,bindParams1,{autoCommit:true});
-        }
-        if(division!=undefined  && district!=undefined){
-            const bindParams1={
-                UserID:{val:userID,type:oracledb.NUMBER},
-                District:{val:district,type:oracledb.STRING},
-            }
-            const query0=`UPDATE USERS
-                          SET LOCATIONID = (SELECT LOCATIONID FROM LOCATIONS
-                            WHERE DISTRICT=:District)
-                          WHERE USERID=:UserID`;
-            const result0 = await connection.execute(query0,bindParams1,{autoCommit:true});
-        }
-        const bindParams={
-            UserID:{val:userID,type:oracledb.NUMBER},
-        };
-        //duplicate
-        const query1=`SELECT u.FIRSTNAME||' '||u.LASTNAME AS Name, 
-                      u.EMAIL,l.DISTRICT,l.DIVISION FROM USERS u 
-                      LEFT JOIN LOCATIONS l ON u.LOCATIONID = l.LOCATIONID 
-                      WHERE u.UserID=:UserID`;
-        //duplicate
-        const query2=`SELECT  SUM(PRICE) FROM ORDERS GROUP BY SELLERID
-                      HAVING  SELLERID =:UserID `;
-        //duplicate
-        const query3=`SELECT  COUNT(BOOKID) FROM ORDERS GROUP BY SELLERID
-                      HAVING SELLERID =:UserID `;
-        //duplicate
-        const query4=`SELECT  COUNT(BOOKID) FROM SELLS GROUP BY SELLERID 
-                      HAVING SELLERID=:UserID `;
-        //duplicate
-        const query5=`SELECT  COUNT(BOOKID) FROM ORDERS GROUP BY BUYERID 
-                      HAVING BUYERID=:UserID `;
-        const result1 = await connection.execute(query1,bindParams);
-        const result2 = await connection.execute(query2,bindParams);
-        const result3 = await connection.execute(query3,bindParams);
-        const result4 = await connection.execute(query4,bindParams);
-        const result5 = await connection.execute(query5,bindParams);
-        console.log(result1.rows[0]);
-        console.log(result2.rows[0]);
-        console.log(result3.rows[0]);
-        console.log(result4.rows[0]);
-        res.render('profile',{
-            detail: result1.rows,
-            money: result2.rows,
-            soldCount: result3.rows,
-            toSellcount: result4.rows,
-            orderCount : result5.rows
-        });
-    } catch (err) {
-        res.send(err.message);
     }
-
-});
+}
 
 
 //############################################################
@@ -300,13 +146,15 @@ app.post('/login', async (req, res) => {
     try {
         const query = `SELECT * FROM users WHERE email=:email AND password=:password`;
         const result = await runQuery(query, { email, password });
-        // console.log(result)
+
         if (result.length > 0) {
             req.session.user = {
                 email: email,
-                userID: result[0][0]
-
+                userID: result[0][0],
+                userName: result[0][4] + ' ' + result[0][5]
             };
+            // console.log(req.session.user.userName)
+
             res.send(result)
         }
 
@@ -330,7 +178,7 @@ app.post('/logout', (req, res) => {
 
 
 app.post('/signup', async (req, res) => {
-    console.log(req.body)
+
     const { email, password } = req.body;
     try {
         const query0 = `SELECT MAX(userId) FROM users`;
@@ -349,6 +197,161 @@ app.post('/signup', async (req, res) => {
 
 
 
+//############################################################
+//             GET METHOD
+//############################################################
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+
+app.get('/index', (req, res) => {
+    res.render('index');
+});
+
+app.get('/signup', (req, res) => {
+    res.render('signup');
+});
+
+
+
+/*
+app.get('/dashboard', isAuthenticated, async (req, res) => {
+    try {
+        const queryR = `SELECT * FROM locations`;
+        const queryData = await runQuery(queryR, []);
+        res.render('dashboard', { queryData });
+    } catch (error) {
+        console.error('Error while fetching data:', error);
+        res.status(500).send('An error occurred while fetching data.');
+    }
+});
+*/
+
+
+
+app.get('/profile', async (req, res) => {
+    try {
+        let userID = req.session.user.userID;
+        let userName = req.session.user.userName;
+
+        const bindParams = {
+            UserID: { val: userID, type: oracledb.NUMBER }
+        };
+
+        const queries = [
+            `SELECT u.FIRSTNAME||' '||u.LASTNAME AS Name, u.EMAIL, l.DISTRICT, l.DIVISION FROM USERS u LEFT JOIN LOCATIONS l ON u.LOCATIONID = l.LOCATIONID WHERE u.UserID=:UserID`,
+            `SELECT SUM(PRICE) FROM ORDERS GROUP BY SELLERID HAVING SELLERID =:UserID`,
+            `SELECT COUNT(BOOKID) FROM ORDERS GROUP BY SELLERID HAVING SELLERID =:UserID`,
+            `SELECT COUNT(BOOKID) FROM SELLS GROUP BY SELLERID HAVING SELLERID=:UserID`,
+            `SELECT COUNT(BOOKID) FROM ORDERS GROUP BY BUYERID HAVING BUYERID=:UserID`
+        ];
+
+        const [result1, result2, result3, result4, result5] = await runQueries(queries, bindParams);
+
+        res.render('profile', {
+            detail: result1,
+            userID: userID,
+            userName: userName || null,
+            money: result2[0] || 0,
+            soldCount: result3[0] || 0,
+            toSellcount: result4[0] || 0,
+            orderCount: result5[0] || 0
+        });
+    } catch (err) {
+        res.send(err.message);
+    }
+});
+
+
+app.post('/profile', async (req, res) => {
+    try {
+        let userID = req.session.user.userID;
+
+        const fname = req.body.cngfname;
+        const lname = req.body.cnglname;
+        const email = req.body.cngmail;
+        const division = req.body.division;
+        const district = req.body.district;
+
+        const connection = await connectionPool.getConnection();
+
+        if (fname != undefined && lname != undefined) {
+            const bindParams1 = {
+                UserID: { val: userID, type: oracledb.NUMBER },
+                fName: { val: fname, type: oracledb.STRING },
+                lName: { val: lname, type: oracledb.STRING },
+            }
+            const query0 = `UPDATE USERS
+                          SET FIRSTNAME = :fName,
+                              LASTNAME =:lName
+                          WHERE USERID=:UserID`;
+            const result0 = await connection.execute(query0, bindParams1, { autoCommit: true });
+        }
+        if (email != undefined) {
+            const bindParams1 = {
+                UserID: { val: userID, type: oracledb.NUMBER },
+                Email: { val: email, type: oracledb.STRING },
+            }
+            const query0 = `UPDATE USERS
+                          SET EMAIL = :Email
+                          WHERE USERID=:UserID`;
+            const result0 = await connection.execute(query0, bindParams1, { autoCommit: true });
+        }
+        if (division != undefined && district != undefined) {
+            const bindParams1 = {
+                UserID: { val: userID, type: oracledb.NUMBER },
+                District: { val: district, type: oracledb.STRING },
+            }
+            const query0 = `UPDATE USERS
+                          SET LOCATIONID = (SELECT LOCATIONID FROM LOCATIONS
+                            WHERE DISTRICT=:District)
+                          WHERE USERID=:UserID`;
+            const result0 = await connection.execute(query0, bindParams1, { autoCommit: true });
+        }
+        const bindParams = {
+            UserID: { val: userID, type: oracledb.NUMBER },
+        };
+        //duplicate
+        const query1 = `SELECT u.FIRSTNAME||' '||u.LASTNAME AS Name, 
+                      u.EMAIL,l.DISTRICT,l.DIVISION FROM USERS u 
+                      LEFT JOIN LOCATIONS l ON u.LOCATIONID = l.LOCATIONID 
+                      WHERE u.UserID=:UserID`;
+        //duplicate
+        const query2 = `SELECT  SUM(PRICE) FROM ORDERS GROUP BY SELLERID
+                      HAVING  SELLERID =:UserID `;
+        //duplicate
+        const query3 = `SELECT  COUNT(BOOKID) FROM ORDERS GROUP BY SELLERID
+                      HAVING SELLERID =:UserID `;
+        //duplicate
+        const query4 = `SELECT  COUNT(BOOKID) FROM SELLS GROUP BY SELLERID 
+                      HAVING SELLERID=:UserID `;
+        //duplicate
+        const query5 = `SELECT  COUNT(BOOKID) FROM ORDERS GROUP BY BUYERID 
+                      HAVING BUYERID=:UserID `;
+        const result1 = await connection.execute(query1, bindParams);
+        const result2 = await connection.execute(query2, bindParams);
+        const result3 = await connection.execute(query3, bindParams);
+        const result4 = await connection.execute(query4, bindParams);
+        const result5 = await connection.execute(query5, bindParams);
+        // console.log(result1.rows[0]);
+        // console.log(result2.rows[0]);
+        // console.log(result3.rows[0]);
+        // console.log(result4.rows[0]);
+        res.render('profile', {
+            detail: result1.rows,
+            money: result2.rows,
+            soldCount: result3.rows,
+            toSellcount: result4.rows,
+            orderCount: result5.rows
+        });
+    } catch (err) {
+        res.send(err.message);
+    }
+
+});
+
+
 
 
 
@@ -360,20 +363,24 @@ app.get('/home', isAuthenticated, async (req, res) => {
         let userEmail = req.session.user.email;
         const query = `SELECT * FROM users WHERE email=:email`;
         const profiles = await runQuery(query, { email: userEmail });
-        req.session.profiles = profiles;
-        userID = profiles[0][0];
-        console.log(userID);
-        name = profiles[0][4] +" "+ profiles[0][5]
-        console.log(name)
-        if(profiles.length>0){
 
-        res.render('home', { profiles: profiles, 
-           name : name,
-           decide: 0,
-            object: null,
-        });
+        req.session.profiles = profiles;
+        let userID = profiles[0][0];
+        // console.log(userID);
+        let userName = profiles[0][4] + " " + profiles[0][5]
+        // console.log(name)
+
+        if (profiles.length > 0) {
+
+            res.render('home', {
+                profiles: profiles,
+                userID: userID,
+                userName: userName,
+                decide: 0,
+                object: null,
+            });
         }
-        
+
     } catch (err) {
         console.log(err);
     }
@@ -384,26 +391,26 @@ app.get('/home', isAuthenticated, async (req, res) => {
 
 app.post('/home', async (req, res) => {
     try {
-        decide=1;
-        const searchName=req.body.search;
-        const selectedOption=req.body.selectedOption;
-        console.log(selectedOption);
+        let decide = 1;
+        const searchName = req.body.search;
+        const selectedOption = req.body.selectedOption;
+        // console.log(selectedOption);
         let t;
-        if(selectedOption==='AuthorName'){
-            t='a';
-        }else if(selectedOption==='PublisherName'){
-            t='p';
-        }else{
-            t='b';
+        if (selectedOption === 'AuthorName') {
+            t = 'a';
+        } else if (selectedOption === 'PublisherName') {
+            t = 'p';
+        } else {
+            t = 'b';
         }
-        const bindParams={
-            SearchName:{val:searchName,type:oracledb.STRING}
+        const bindParams = {
+            SearchName: { val: searchName, type: oracledb.STRING }
         }
         const connection = await connectionPool.getConnection();
         // const query1 = SELECT CATEGORY,SUBCATEGORY,BRAND FROM PRODUCTS;
         let query;
-        if(selectedOption==='PublicationYear'){
-           query=`SELECT b.TITLE AS book_title, a.AUTHORNAME AS author_name,
+        if (selectedOption === 'PublicationYear') {
+            query = `SELECT b.TITLE AS book_title, a.AUTHORNAME AS author_name,
                          p.PUBLISHERNAME AS publisher, b.PUBLICATIONYEAR AS publication_year,
                          b.PRICE AS price, u.FIRSTNAME ||' '||u.LASTNAME AS seller_name,
                          (s.DISCOUNT*100) AS discount,u.USERID as userID
@@ -413,8 +420,8 @@ app.post('/home', async (req, res) => {
                         JOIN SELLS s ON s.BOOKID = b.BOOKID
                         JOIN USERS u ON s.SELLERID = u.USERID
                         WHERE ${t}.${selectedOption} = :SearchName`;
-        }else{
-            query=`SELECT b.TITLE AS book_title, a.AUTHORNAME AS author_name,
+        } else {
+            query = `SELECT b.TITLE AS book_title, a.AUTHORNAME AS author_name,
                           p.PUBLISHERNAME AS publisher, b.PUBLICATIONYEAR AS publication_year,
                           b.PRICE AS price, u.FIRSTNAME ||' '||u.LASTNAME AS seller_name,
                           (s.DISCOUNT*100) AS discount,u.USERID as userID
@@ -425,19 +432,20 @@ app.post('/home', async (req, res) => {
                         JOIN USERS u ON s.SELLERID = u.USERID
                         WHERE ${t}.${selectedOption} LIKE '%'||:SearchName ||'%'`;
         }
-        const result = await connection.execute(query,bindParams);
+        const result = await connection.execute(query, bindParams);
         // const reslt={
         //     result: result.rows,
         // };
-        objectget=result.rows;
+        // objectget=result.rows;
+
         connection.release();
         console.log('Retrieved data:', result);
-        //res.send('hjdgjdg');
-        res.render('home',{
+
+        res.render('home', {
             object: result.rows,
-            profiles : null,
-            decide : decide,
-            iterators : -1,
+            profiles: null,
+            decide: decide,
+            iterators: -1,
         });
     } catch (err) {
         res.send(err.message);
@@ -449,75 +457,76 @@ app.post('/home', async (req, res) => {
 //            Add
 //############################################################
 
-app.get('/add',(req,res)=>{
-    decide=0;
-    res.render('add',{
+app.get('/add', (req, res) => {
+    decide = 0;
+    res.render('add', {
         decide: decide,
     });
 });
-app.post('/add',async(req,res)=>{
+
+app.post('/add', async (req, res) => {
     try {
-        decide=1;
-        // userID=104;
-        const title=req.body.Title;
-        const author=req.body.Author;
-        const publisher=req.body.Publisher;
-        const Year1=req.body.Year;
-        const year=parseInt(Year1, 10)
-        const Price1=req.body.Price;
+        decide = 1;
+        const userID = req.session.user.userID;
+        const title = req.body.Title;
+        const author = req.body.Author;
+        const publisher = req.body.Publisher;
+        const Year1 = req.body.Year;
+        const year = parseInt(Year1, 10)
+        const Price1 = req.body.Price;
         const price = parseInt(Price1, 10);
-        const Discount1=req.body.Discount;
+        const Discount1 = req.body.Discount;
         let discount = parseFloat(Discount1);
-        discount=discount/100.0;
+        discount = discount / 100.0;
         const connection = await connectionPool.getConnection();
         // const query1 = SELECT CATEGORY,SUBCATEGORY,BRAND FROM PRODUCTS;
-        const query1=`SELECT MAX(bookID) AS highestBookID FROM Books`;
-        const query2=`SELECT MAX(publisherID) AS highestPublisherID FROM Publishers`;
-        const query3=`SELECT MAX(authorID) AS highestAuthorID FROM Authors`;
+        const query1 = `SELECT MAX(bookID) AS highestBookID FROM Books`;
+        const query2 = `SELECT MAX(publisherID) AS highestPublisherID FROM Publishers`;
+        const query3 = `SELECT MAX(authorID) AS highestAuthorID FROM Authors`;
         let BOOKID = await connection.execute(query1);
         let PUBLISHERID = await connection.execute(query2);
         let AUTHORID = await connection.execute(query3);
-        let bookId =BOOKID.rows[0][0]+1;
-        let publisherID =PUBLISHERID.rows[0][0]+1;
-        let authorID =AUTHORID.rows[0][0]+1;
-        const bindParams4={
-            AuthorID:{val:authorID,type:oracledb.NUMBER},
-            Author:{val:author,type:oracledb.STRING}
+        let bookId = BOOKID.rows[0][0] + 1;
+        let publisherID = PUBLISHERID.rows[0][0] + 1;
+        let authorID = AUTHORID.rows[0][0] + 1;
+        const bindParams4 = {
+            AuthorID: { val: authorID, type: oracledb.NUMBER },
+            Author: { val: author, type: oracledb.STRING }
         };
-        const bindParams5={
-            PublisherID:{val:publisherID,type:oracledb.NUMBER},
-            Publisher:{val:publisher,type:oracledb.STRING}
+        const bindParams5 = {
+            PublisherID: { val: publisherID, type: oracledb.NUMBER },
+            Publisher: { val: publisher, type: oracledb.STRING }
         };
-        const bindParams6={
-            BookID:{val:bookId,type:oracledb.NUMBER},
-            Title:{val:title,type:oracledb.STRING},
-            Year:{val:year,type:oracledb.NUMBER},
-            AuthorId:{val:authorID,type:oracledb.NUMBER},
-            Price:{val:price,type:oracledb.NUMBER},
-            PublisherId:{val:publisherID,type:oracledb.NUMBER},
+        const bindParams6 = {
+            BookID: { val: bookId, type: oracledb.NUMBER },
+            Title: { val: title, type: oracledb.STRING },
+            Year: { val: year, type: oracledb.NUMBER },
+            AuthorId: { val: authorID, type: oracledb.NUMBER },
+            Price: { val: price, type: oracledb.NUMBER },
+            PublisherId: { val: publisherID, type: oracledb.NUMBER },
         };
-        const bindParams7={
-            UserId:{val:userID,type:oracledb.NUMBER},
-            BookId:{val:bookId,type:oracledb.NUMBER},
-            Discount:{val:discount,type:oracledb.NUMBER}
+        const bindParams7 = {
+            UserId: { val: userID, type: oracledb.NUMBER },
+            BookId: { val: bookId, type: oracledb.NUMBER },
+            Discount: { val: discount, type: oracledb.NUMBER }
         };
-        const query4=`INSERT INTO Authors (authorID, authorName)
+        const query4 = `INSERT INTO Authors (authorID, authorName)
                         VALUES (:AuthorID, :Author)`;
-        const query5=`INSERT INTO Publishers (publisherID, publisherName)
+        const query5 = `INSERT INTO Publishers (publisherID, publisherName)
                         VALUES (:PublisherID, :Publisher)`;
-        const query6=`INSERT INTO Books (bookID, title, publicationYear, authorID, price, publisherID)
+        const query6 = `INSERT INTO Books (bookID, title, publicationYear, authorID, price, publisherID)
                         VALUES (:BookID, :Title, :Year, :AuthorId, :Price, :PublisherId)`;
-        const query7=`INSERT INTO Sells (sellerID, bookID, discount)
+        const query7 = `INSERT INTO Sells (sellerID, bookID, discount)
                         VALUES (:UserId,:BookId,:Discount)`;
         // console.log(query4);
-        const result4 = await connection.execute(query4,bindParams4,{autoCommit:true});
-        const result5 = await connection.execute(query5,bindParams5,{autoCommit:true});
-        const result6 = await connection.execute(query6,bindParams6,{autoCommit:true});
-        const result7 = await connection.execute(query7,bindParams7,{autoCommit:true});
+        const result4 = await connection.execute(query4, bindParams4, { autoCommit: true });
+        const result5 = await connection.execute(query5, bindParams5, { autoCommit: true });
+        const result6 = await connection.execute(query6, bindParams6, { autoCommit: true });
+        const result7 = await connection.execute(query7, bindParams7, { autoCommit: true });
         connection.release();
         // console.log('Retrieved data:', result.rows);
-        res.render('add',{
-            decide : decide,
+        res.render('add', {
+            decide: decide,
         });
     } catch (err) {
         res.send(err.message);
@@ -526,73 +535,99 @@ app.post('/add',async(req,res)=>{
 //############################################################
 //            AddCart
 //############################################################
-app.post('/addCart',async(req,res)=>{
+app.post('/addCart', async (req, res) => {
     try {
-    //   userID=104
-      const title=req.body.title;
-      const sellerID=parseInt(req.body.userID);
-      const iterator=req.body.iterator;
-      console.log(iterator);
-    //   console.log(typeof sellerID);
-      const connection = await connectionPool.getConnection();  
-      bindParams0={
-        Title:{val:title,type: oracledb.STRING},
-      }
-      const query0=`SELECT BOOKID FROM BOOKS WHERE TITLE=:Title`;
-      const result0=await connection.execute(query0,bindParams0);
-    //   console.log(result0.rows[0][0]);
-      bindParams={
-        buyerID:{val:userID,type: oracledb.NUMBER},
-        bookID:{val:result0.rows[0][0],type: oracledb.NUMBER},
-        sellerID:{val:sellerID,type: oracledb.NUMBER},
-      }
-      const query=`INSERT INTO CART (BUYERID, BOOKID, SELLERID)
-                    VALUES (:buyerID, :bookID,:sellerID)`;
-      const result= await connection.execute(query,bindParams,{autoCommit:true});
-      
-      res.render('home',{
-        object : objectget,
-        decide : 1,
-        iterators: iterator,
-      })
+        const userID = req.session.user.userID;
+        const title = req.body.title;
+        const sellerID = parseInt(req.body.userID);
+        // const iterator = req.body.iterator;
+
+        const bindParams0 = {
+            Title: { val: title, type: oracledb.STRING },
+        }
+        const query0 = `SELECT BOOKID FROM BOOKS WHERE TITLE=:Title`;
+        const result0 = await runQuery(query0, bindParams0);
+
+        const bindParams = {
+            buyerID: userID,
+            bookID: result0[0][0],
+            sellerID: sellerID,
+        }
+        const query = `INSERT INTO CART (BUYERID, BOOKID, SELLERID)
+                       VALUES (:buyerID, :bookID, :sellerID)`;
+        await runQuery(query, bindParams);
+
+        res.json({ success: true, message: 'Book added successfully' });
     } catch (err) {
         console.log(err);
-        res.send(err);
+        res.json({ success: false, message: 'Failed to add the book' });
     }
 });
+
+
+app.post('/removeFromCart', async (req, res) => {
+    try {
+        const bookID = req.body.bookID;
+        const sellerID = req.body.sellerID;
+        const userID = req.session.user.userID;
+
+        const bindParams = {
+            buyerID: userID,
+            bookID: bookID,
+            sellerID: sellerID
+        };
+
+        const query = `DELETE FROM CART WHERE BUYERID = :buyerID AND BOOKID = :bookID AND SELLERID= :sellerID`;
+        await runQuery(query, bindParams);
+
+        res.json({ success: true, message: 'Book removed successfully' });
+
+    } catch (err) {
+        console.log(err);
+        res.json({ success: false, message: 'Failed to remove the book' });
+    }
+});
+
+
 
 //############################################################
 //            Cart
 //############################################################
-app.get('/cart',async(req,res)=>{
+app.get('/cart', async (req, res) => {
     try {
-        console.log('hello')
-        // userID=104;
-        const connection= await connectionPool.getConnection();
-        const bindParams={
-            UserID:{val:userID,type:oracledb.NUMBER},
+
+        const userID = req.session.user.userID;
+        const connection = await connectionPool.getConnection();
+        const bindParams = {
+            UserID: { val: userID, type: oracledb.NUMBER },
         };
-        query=`SELECT (SELECT B.TITLE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS BOOK_NAME,
-                      (SELECT A.AUTHORNAME FROM AUTHORS A WHERE A.AUTHORID = 
-                      (SELECT B.AUTHORID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS AUTHOR_NAME,
-                      (SELECT P.PUBLISHERNAME FROM PUBLISHERS P WHERE P.PUBLISHERID = 
-                      (SELECT B.PUBLISHERID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS PUBLISHER_NAME,
-                      (SELECT B.PRICE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS PRICE,
-                      (SELECT S.DISCOUNT FROM SELLS S WHERE S.BOOKID = C.BOOKID AND S.SELLERID 
-                       = C.SELLERID) AS DISCOUNT,
-                      (SELECT U.FIRSTNAME ||' '|| U.LASTNAME FROM USERS U WHERE U.USERID = C.SELLERID) 
-                      AS SELLER_FULL_NAME
-                      FROM CART C WHERE BUYERID=:UserID`;
-        const result= await connection.execute(query,bindParams);
+        query = `
+        SELECT 
+        C.BOOKID AS BOOK_ID,
+        C.SELLERID AS SELLER_ID,  -- Adding SELLERID to the results
+        (SELECT B.TITLE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS BOOK_NAME,
+        (SELECT A.AUTHORNAME FROM AUTHORS A WHERE A.AUTHORID = 
+        (SELECT B.AUTHORID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS AUTHOR_NAME,
+        (SELECT P.PUBLISHERNAME FROM PUBLISHERS P WHERE P.PUBLISHERID = 
+        (SELECT B.PUBLISHERID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS PUBLISHER_NAME,
+        (SELECT B.PRICE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS PRICE,
+        (SELECT S.DISCOUNT FROM SELLS S WHERE S.BOOKID = C.BOOKID AND S.SELLERID 
+        = C.SELLERID) AS DISCOUNT,
+        (SELECT U.FIRSTNAME ||' '|| U.LASTNAME FROM USERS U WHERE U.USERID = C.SELLERID) 
+        AS SELLER_FULL_NAME
+        FROM CART C WHERE BUYERID=:UserID
+        `;
+
+        const result = await connection.execute(query, bindParams);
         console.log(result.rows)
-        res.render('cart',{
+        res.render('cart', {
             books: result.rows,
         });
     } catch (error) {
         console.log('hoi nai')
-        
+
     }
-    
+
 });
 
 
@@ -608,7 +643,7 @@ app.get('/cart',async(req,res)=>{
 app.get('/sales', async (req, res) => {
     try {
         decide = 1;
-        // userID = 104;
+        const userID = req.session.user.userID;
 
         const bindParams = {
             UserId: { val: userID, type: oracledb.NUMBER }
@@ -666,7 +701,7 @@ app.get('/sales', async (req, res) => {
 app.post('/sales', async (req, res) => {
     try {
         decide = 1;
-        // userID = 104;
+        const userID = req.session.user.userID;
 
         const bookName = req.body.remove;
         console.log(bookName);
@@ -746,77 +781,166 @@ app.post('/sales', async (req, res) => {
 //############################################################
 //             CHAT
 //############################################################
-const http = require('http').createServer(app)
 
-app.get('/chat', (req, res) => {
-    // Access the profiles data from the session variable
-    const profiles = req.session.profiles;
-    console.log(profiles[0][0])
-    const senderID = profiles[0][0]
-    res.render('chat')
-    if (profiles) {
-        // res.render('chat.html',{profiles: profiles,senderID: senderID})
-       
-    } else {
-        
-        // res.render('chat',{senderID:senderID});
+app.get('/chat', async (req, res) => {
+    const userID = req.session.user.userID;
+    // console.log('id  ' , userID)
+
+    const query = `
+          SELECT DISTINCT CASE 
+                          WHEN senderID = :userID THEN receiverID 
+                          ELSE senderID END AS interactionID 
+          FROM Messages 
+          WHERE senderID = :userID OR receiverID = :userID
+      `;
+    const bindParams = {
+        userID: userID,
+    };
+
+    const queryData = await runQuery(query, bindParams);
+
+    // console.log('server chat ee query ', queryData)
+
+    res.render('chat', {
+        userID: userID,
+        queryData: queryData,
+        includeChatClient: true // or false
+    })
+});
+
+
+app.post("/chatList", async (req, res) => {
+    try {
+        const { user1ID, user2ID } = req.body;
+        console.log('s ee users: ', user1ID, ' -> ', user2ID)
+        const query = `
+        SELECT * 
+        FROM Messages 
+        WHERE (senderID = :user1ID AND receiverID = :user2ID) 
+           OR (senderID = :user2ID AND receiverID = :user1ID) 
+        ORDER BY messageTime ASC
+    `;
+        const bindParams = {
+            user1ID: user1ID,
+            user2ID: user2ID,
+
+        };
+
+        const queryData = await runQuery(query, bindParams);
+        console.log(' chat list query ', queryData)
+
+        res.json(queryData);
+    } catch (error) {
+        console.error("Error fetching interactions:", error);
+        res.status(500).json({ error: "Error fetching interactions" });
     }
 });
 
 
-// Socket 
-const io = require('socket.io')(http)
 
-io.on('connection', (socket) => {
-    console.log('Connected...')
-    socket.on('message', (msg) => {
-        socket.broadcast.emit('message', msg)
-    })
+async function generateMessageID() {
+    const getMaxMessageIDQuery = `
+        SELECT MAX(messageID) AS maxMessageID FROM MESSAGES
+    `;
 
-})
+    try {
+        const result = await runQuery(getMaxMessageIDQuery, []);
+        console.log(result);
 
-/*
-io.on('connection', (socket) => {
-    console.log('A user connected');
+        if (!result || !result.rows || result.rows.length === 0) {
+            throw new Error("Unexpected database result");
+        }
 
-    // Let's assume clients emit a 'join' event when they want to join a room for a chat
-    socket.on('join', (senderID, receiverID) => {
-        let roomName = createRoomName(senderID, receiverID);
-        socket.join(roomName);
-        console.log(`User with ID ${senderID} joined room ${roomName}`);
-    });
+        const maxMessageID = result.rows[0][0] || 0;
+        const newMessageID = maxMessageID + 1;
 
-    socket.on('message', (msg) => {
-        let roomName = createRoomName(msg.senderID, msg.receiverID);
-        io.to(roomName).emit('message', msg);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('A user disconnected');
-    });
-});
-
-function createRoomName(id1, id2) {
-    // Ensure room name is always consistent regardless of the order of IDs
-    if (id1 < id2) {
-        return id1 + '-' + id2;
-    } else {
-        return id2 + '-' + id1;
+        return newMessageID;
+    } catch (error) {
+        console.error("Error generating message ID:", error);
+        throw error;  // or return some default/fallback value
     }
 }
-*/
-
-//############################################################
-//             RUN
 //############################################################
 
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//     console.log(`Server started on port ${PORT}`);
-// });
 
-const PORT = process.env.PORT || 3000
+///
 
-http.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}`)
-})
+
+
+
+
+
+
+
+//############################################################
+//                       Server 
+//############################################################
+
+
+const server = require('http').createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+    },
+});
+
+
+//############################################################
+//                      Socket IO
+//############################################################
+
+
+io.on("connection", (socket) => {
+
+
+    console.log(`User Connected: ${socket.id}`);
+
+
+    socket.on("join_room", (data) => {
+        socket.join(data);
+        console.log(`server ee: User with ID: ${socket.id} joined room: ${data}`);
+    });
+
+    socket.on('send_message', async (data) => {
+       
+
+        const { senderID, receiverID, messageText } = data;
+        console.log('se socket ', senderID, ' ', receiverID, ' ', messageText)
+        
+
+        const insertMessageQuery = `
+            INSERT INTO messages (senderID, receiverID, messageText, messageTime, isRead)
+            VALUES (:senderID, :receiverID, :messageText, SYSTIMESTAMP, :isRead)
+        `;
+
+        const bindParams = {
+            senderID: senderID,
+            receiverID: receiverID,
+            messageText: messageText,
+            isRead: 0, // You can set the appropriate value for isRead
+        };
+
+
+        try {
+            await runQuery(insertMessageQuery, bindParams);
+            socket.to(data.roomName).emit("receive_message", data);
+        } catch (error) {
+            console.error('There was an error inserting the data:', error.message);
+        }
+
+    });
+
+    socket.on("disconnect", () => {
+        console.log("User Disconnected", socket.id);
+    });
+});
+
+const port = process.env.port || 3000
+server.listen(port, () => {
+    console.log(`server running on port ${port}`);
+});
+
+
+

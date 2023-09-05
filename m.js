@@ -544,9 +544,10 @@ app.post("/interactions", async (req, res) => {
     };
 
     const queryData = await runQuery(query, bindParams);
-    const output = extractData(queryData, ["interactionID"]);
+    console.log(queryData)
+    // const output = extractData(queryData, ["interactionID"]);
 
-    res.json(output);
+    res.json(queryData);
   } catch (error) {
     console.error("Error fetching interactions:", error);
     res.status(500).json({ error: "Error fetching interactions" });

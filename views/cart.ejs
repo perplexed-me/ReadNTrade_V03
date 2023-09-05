@@ -73,30 +73,62 @@
         </div>
       </div>
     </nav>
-    <div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<div>
       <h1>Book Details</h1>
-      <table class="flash"> <!-- Add the 'flash' class to the table -->
+      <table class="flash">
+        <!-- Add the 'flash' class to the table -->
         <tr>
+          <th>Book ID</th>
           <th>Title</th>
           <th>Author</th>
           <th>Publisher</th>
           <th>Pages</th>
           <th>Discount</th>
-          <th>Contributor</th>
+          <th>Seller</th>
+          <th>Action</th>
         </tr>
         <% for (let i=0; i < books.length; i++) { %>
           <tr>
             <td><%= books[i][0] %></td>
-            <td><%= books[i][1] %></td>
             <td><%= books[i][2] %></td>
             <td><%= books[i][3] %></td>
-            <td><%= books[i][4] * 100 %> %</td>
-            <td><%= books[i][5] %></td>
+            <td><%= books[i][4] %></td>
+            <td><%= books[i][5]  %> </td>
+            <td><%= (books[i][6] * 100).toFixed(2) %>%</td>
+            <td><%= books[i][7] %></td>
+            <td>
+              <button class="remove-from-cart-btn" data-book-id="<%= books[i][0] %>" data-seller-id="<%= books[i][1] %>">Remove</button>
+            </td>
           </tr>
-        <% } %>
+          <% } %>
       </table>
     </div>
-    
+
+<script>
+  document.querySelectorAll('.remove-from-cart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const bookID = this.getAttribute('data-book-id');
+        const sellerID = this.getAttribute('data-seller-id');
+        console.log('s id ', sellerID)
+        
+        axios.post('/removeFromCart', { bookID: bookID, sellerID: sellerID })
+            .then(function(response) {
+                if (response.data.success) {
+                    // alert('Book removed successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to remove the book. Please try again.');
+                }
+            })
+            .catch(function(error) {
+                alert('Failed to remove the book. Please try again.');
+            });
+    });
+});
+
+</script>
+
   </div>
 </body>
 
