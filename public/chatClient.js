@@ -13,19 +13,21 @@ function joinRoom(senderID, receiverID) {
   receiver = receiverID;
 
   socket.emit('join_room', roomName);
+  const clickedMessageDiv = document.getElementById('clicked-message');
+  clickedMessageDiv.textContent = `Chatting with User ${receiverID}`;
 }
 
 //
 function appendMessage(senderID, messageText) {
-  const messageLi = document.createElement('div');
-  messageLi.className = 'message-container';
+  const messageDiv = document.createElement('div');  
+  messageDiv.className = 'message-container';  
   
   // Add sender's name if it's a received message
   if (senderID !== '<%= userID %>') {
       const senderName = document.createElement('div');
       senderName.className = 'sender-name';
       senderName.textContent = 'user: '+senderID;
-      messageLi.appendChild(senderName);
+      messageDiv.appendChild(senderName);  
   }
 
   // Create message content div
@@ -33,15 +35,15 @@ function appendMessage(senderID, messageText) {
   messageContent.textContent = messageText;
   messageContent.className = senderID === '<%= userID %>' ? 'send_message' : 'receive_message';
   
-  messageLi.appendChild(messageContent);
+  messageDiv.appendChild(messageContent);  
 
-  
-  const messagesUl = document.getElementById('messages');
-  messagesUl.appendChild(messageLi);
+  const messagesContainer = document.getElementById('messages');  
+  messagesContainer.appendChild(messageDiv); 
 
   // Scroll to the bottom to ensure the latest message is visible
-  messagesUl.scrollTop = messagesUl.scrollHeight;
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;  
 }
+
 
 
 

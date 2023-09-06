@@ -14,29 +14,33 @@
     <div id="chat-container">
 
         <!-- Display the current user's profile or name -->
-        <header>
+        <!-- <header >
             <h2>Welcome, User <%= userID %></h2>
-        </header>
+        </header> -->
         
         <!-- Allow user to manually enter a receiver ID -->
         <div id="add-room">
             <input type="text" id="receiver_id" placeholder="Enter User ID to chat">
             <button onclick="joinRoom('<%= userID %>',document.getElementById('receiver_id').value)">Start Chat</button>
         </div>
-
+        <!-- <div><br></div> -->
         <!-- Display list of users the current user has interacted with -->
         <div id="room-list">
             <% queryData.forEach(function(id) { %>
                 <!-- Added an online status indicator (this is a placeholder and would need actual status data to work) -->
                 <button onclick="joinRoom('<%=userID %>','<%= id %>')">User <%= id %> <span class="online-status"></span></button>
             <% }); %>
+            <div><br></div>
+            <div id="clicked-message"></div>
         </div>
-
+        
+        <div><br></div>
+        
         <div id="message-window">
-            <div class="chat-header">
+            <!-- <div class="chat-header">
                 Conversation with: <span id="chat-partner-name"></span>
-            </div>
-            <ul class="chat-messages" id="messages"></ul>
+            </div> -->
+            <div class="chat-messages" id="messages"></div>
 
             <div class="chat-footer">
                 <input type="text" id="message-text" placeholder="Type your message..." />
@@ -45,12 +49,6 @@
         </div>
         
         
-
-        <!-- Message input area -->
-        <!-- <div id="message-input">
-            <input type="text" id="message-text" placeholder="Type your message">
-            <button onclick="sendMessage(document.getElementById('message-text').value)">Send</button>
-        </div> -->
     </div>
 
     <!-- Include the Socket.io client library -->
@@ -59,8 +57,7 @@
         <script src="./chatClient.js"></script>
     <% } %>
 
-    <!-- Add a script to handle emoji support, notifications, etc. (just a placeholder for now)
-    <script src="./extraFeatures.js"></script> -->
+    
 
 </body>
 
