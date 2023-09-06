@@ -8,9 +8,9 @@ const { Server } = require('socket.io');
 
 
 const dbConfig = {
-    user: 'READNTRADE',
-    password: '12345',
-    connectString: 'LAPTOP-96SS764U/ORCLPDB',
+    user: 'ReadNTrade',
+    password: 'hr',
+    connectString: 'localhost/orclpdb1',
     poolMax: 20,
     poolMin: 10,
     poolIncrement: 2,
