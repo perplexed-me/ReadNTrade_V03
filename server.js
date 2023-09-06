@@ -8,9 +8,9 @@ const { Server } = require('socket.io');
 
 
 const dbConfig = {
-    user: 'ReadNTrade',
-    password: 'hr',
-    connectString: 'localhost/orclpdb1',
+    user: 'READNTRADE',
+    password: '12345',
+    connectString: 'LAPTOP-96SS764U/ORCLPDB',
     poolMax: 20,
     poolMin: 10,
     poolIncrement: 2,
@@ -248,18 +248,54 @@ app.get('/profile', async (req, res) => {
         ];
 
         const [result1, result2, result3, result4, result5] = await runQueries(queries, bindParams);
-
-        res.render('profile', {
+        // console.log(result2);
+        // console.log(result3);
+        // console.log(result4);
+        // res.render('profile', {
+        //     detail: result1,
+        //     userID: userID,
+        //     userName: userName || null,
+        //     money: result2[0][0] ,//|| 0,
+        //     soldCount: result3[0][0],// || 0,
+        //     toSellcount: result4[0][0],// || 0,
+        //     orderCount: result5[0][0] //|| 0
+        // });
+        let Money,SoldCount,ToSellcount,OrderCount;
+        console.log(result4.length);
+        if(result2.length===0){
+            Money=0;
+        }else{
+            Money=result2;
+        }
+        if(result3.length===0){
+            SoldCount=0;
+        }else{
+            SoldCount=result3;
+        }
+        if(result4.length===0){
+            ToSellcount=0;
+        }else{
+            ToSellcount=result4;
+        }
+        if(result5.length===0){
+            OrderCount=0;
+        }else{
+            OrderCount=result5;
+        }
+        res.render('profile',{
             detail: result1,
             userID: userID,
             userName: userName || null,
-            money: result2[0] || 0,
-            soldCount: result3[0] || 0,
-            toSellcount: result4[0] || 0,
-            orderCount: result5[0] || 0
+            money: Money,
+            soldCount: SoldCount,
+            toSellcount: ToSellcount,
+            orderCount : OrderCount
         });
+
+
     } catch (err) {
         res.send(err.message);
+        console.log(err);
     }
 });
 
