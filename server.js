@@ -846,7 +846,7 @@ app.get('/payment',async(req,res)=>{
             `;
         const result = await connection.execute(query, bindParams);
         console.log(result.rows)
-        res.render('cart', {
+        res.render('payment', {
             books: result.rows,
         });
     } catch (err) {
