@@ -844,83 +844,6 @@ app.get('/chat', async (req, res) => {
     })
 });
 
-/*
-app.post("/chatList", async (req, res) => {
-    // let userName = req.session.user.userName;
-    try {
-        const { user1ID, user2ID } = req.body;
-        // console.log('s ee users: ', user1ID, ' -> ', user2ID)
-        const query = `
-        SELECT * 
-        FROM Messages 
-        WHERE (senderID = :user1ID AND receiverID = :user2ID) 
-           OR (senderID = :user2ID AND receiverID = :user1ID) 
-        ORDER BY messageTime ASC
-    `;
-        const bindParams = {
-            user1ID: user1ID,
-            user2ID: user2ID,
-
-        };
-
-        const queryData = await runQuery(query, bindParams);
-        // console.log(' chat list query ', queryData)
-
-        res.json(userName,queryData);
-    } catch (error) {
-        console.error("Error fetching interactions:", error);
-        res.status(500).json({ error: "Error fetching interactions" });
-    }
-});
-*/
-
-// app.post("/chatList", async (req, res) => {
-//     try {
-//         const { user1ID, user2ID } = req.body;
-
-//         // Query to fetch the usernames for both user1ID and user2ID
-//         const userNameQuery = `
-//             SELECT userID, userName 
-//             FROM Users 
-//             WHERE userID IN (:user1ID, :user2ID)
-//         `;
-
-//         const userNameBindParams = {
-//             user1ID: user1ID,
-//             user2ID: user2ID
-//         };
-
-//         const userNameData = await runQuery(userNameQuery, userNameBindParams);
-//         console.log('dataaa ',userNameData)
-
-//         // Transform the results into an easy-to-use object
-//         const userNames = {};
-//         userNameData.forEach(user => {
-//             userNames[user.userID] = user.userName;
-//         });
-
-//         const messagesQuery = `
-//             SELECT * 
-//             FROM Messages 
-//             WHERE (senderID = :user1ID AND receiverID = :user2ID) 
-//                 OR (senderID = :user2ID AND receiverID = :user1ID) 
-//             ORDER BY messageTime ASC
-//         `;
-
-//         const queryData = await runQuery(messagesQuery, userNameBindParams);
-
-//         // Send the response as a JSON object containing the usernames and the messages
-//         res.json({
-//             user1Name: userNames[user1ID],
-//             user2Name: userNames[user2ID],
-//             messages: queryData
-//         });
-
-//     } catch (error) {
-//         console.error("Error fetching interactions:", error);
-//         res.status(500).json({ error: "Error fetching interactions" });
-//     }
-// });
 
 
 app.post("/chatList", async (req, res) => {
@@ -985,16 +908,6 @@ app.post("/chatList", async (req, res) => {
         res.status(500).json({ error: "Error fetching interactions" });
     }
 });
-
-
-
-//############################################################
-
-
-///
-
-
-
 
 
 
