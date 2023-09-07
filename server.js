@@ -849,7 +849,7 @@ app.get('/payment',async(req,res)=>{
         res.render('payment', {
             books: result.rows,
         });
-    } catch (err) {
+    } catch (err){
         console.log(err);
     }
 });
