@@ -303,7 +303,8 @@ app.get('/profile', async (req, res) => {
 app.post('/profile', async (req, res) => {
     try {
         let userID = req.session.user.userID;
-
+        let userName = req.session.user.userName;
+        console.log(userID);
         const fname = req.body.cngfname;
         const lname = req.body.cnglname;
         const email = req.body.cngmail;
@@ -376,6 +377,8 @@ app.post('/profile', async (req, res) => {
         // console.log(result4.rows[0]);
         res.render('profile', {
             detail: result1.rows,
+            userID: userID,
+            userName: userName || null,
             money: result2.rows,
             soldCount: result3.rows,
             toSellcount: result4.rows,
@@ -810,6 +813,46 @@ app.post('/sales', async (req, res) => {
 
 
 
+//############################################################
+//                PAYMENT
+//############################################################
+app.get('/payment',async(req,res)=>{
+    try {
+        const userID= req.session.user.userID;
+        const sellerID=req.body.sellerID;
+        const bookID=req.body.bookID;
+        const connection = await connectionPool.getConnection();
+        const bindParams = {
+            UserID: { val: userID, type: oracledb.NUMBER },
+            SellerID: { val: sellerID, type: oracledb.NUMBER },
+            BookID: { val: bookID, type: oracledb.NUMBER },
+        };
+        const query = `
+            SELECT 
+            C.BOOKID,
+            C.BUYERID,
+            C.SELLERID,
+            (SELECT B.TITLE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS BOOK_NAME,
+            (SELECT A.AUTHORNAME FROM AUTHORS A WHERE A.AUTHORID = 
+            (SELECT B.AUTHORID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS AUTHOR_NAME,
+            (SELECT P.PUBLISHERNAME FROM PUBLISHERS P WHERE P.PUBLISHERID = 
+            (SELECT B.PUBLISHERID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS PUBLISHER_NAME,
+            (SELECT B.PRICE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS PRICE,
+            (SELECT S.DISCOUNT FROM SELLS S WHERE S.BOOKID = C.BOOKID AND S.SELLERID 
+            = C.SELLERID) AS DISCOUNT,
+            (SELECT U.FIRSTNAME ||' '|| U.LASTNAME FROM USERS U WHERE U.USERID = C.SELLERID) 
+            AS SELLER_FULL_NAME
+            FROM CART C WHERE C.BUYERID=:UserID AND C.SELLERID= :SellerID AND C.BOOKID=:BookID
+            `;
+        const result = await connection.execute(query, bindParams);
+        console.log(result.rows)
+        res.render('payment', {
+            books: result.rows,
+        });
+    } catch (err){
+        console.log(err);
+    }
+});
 
 
 
