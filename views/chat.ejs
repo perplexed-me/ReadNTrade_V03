@@ -31,7 +31,8 @@
                 <button onclick="joinRoom('<%=userID %>','<%= id %>')">User <%= id %> <span class="online-status"></span></button>
             <% }); %>
             <div><br></div>
-            <div id="clicked-message"></div>
+            <div id="clicked-message" style="color: rgb(255, 255, 255);font-weight: bold;"></div>
+
         </div>
         
         <div><br></div>
@@ -43,9 +44,10 @@
             <div class="chat-messages" id="messages"></div>
 
             <div class="chat-footer">
-                <input type="text" id="message-text" placeholder="Type your message..." />
+                <textarea id="message-text" placeholder="Type your message..."></textarea>
                 <button onclick="sendMessage(document.getElementById('message-text').value)">Send</button>
             </div>
+            
         </div>
         
         
