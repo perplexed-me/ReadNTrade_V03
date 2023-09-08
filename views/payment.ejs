@@ -9,7 +9,7 @@
       crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- <link rel="stylesheet" href="styleCart.css"> -->
@@ -19,8 +19,321 @@
     <title>ReadNTrade</title>
 </head>
 <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
-    </script>
+    <div class="container">
+      <div class="row">
+          <div class="col-7 ">
+              <div class="row d-flex justify-content-center">
+                  <div class="col-2 paymargin">
+                      <button type="button" class="btn nagad fw-bolder " onclick="nagad()">
+                          Nagad
+                      </button>
+                  </div>
+                  <div class="col-2 paymargin">
+                      <button type="button" class="btn bkash fw-bolder" onclick="bkash()">
+                          Bkash
+                      </button>
+                  </div>
+                  <div class="col-2 ">
+                      <button type="button" class="btn rocket fw-bolder" onclick="rocket()">
+                          Rocket
+                      </button>
+                  </div>
+              </div>
+              <div class="row d-flex justify-content-center">
+                  <div class="col-2 paymargin">
+                      <button type="button" class="btn upay fw-bolder " onclick="upay()">
+                          Upay
+                      </button>
+                  </div>
+                  <div class="col-2 paymargin">
+                      <button type="button" class="btn surecash fw-bolder " onclick="surecash()">
+                          SureCash
+                      </button>
+                  </div>
+                  <div class="col-2">
+                      <button type="button" class="btn mcash fw-bolder" onclick="mcash()">
+                          mCash
+                      </button>
+                  </div>
+              </div>
+          </div>
+          <div class="col-5">
+              <div class="row nagadpage" id="nagad" style="display: none;">
+                  <img src="nagad.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
+                  <br><br>
+                  <div class="nagadcover">
+                      <br>
+                      <div class="nagadwhite rounded text-center fs-4">
+                          <br>
+                          <div>
+                              <b>Marchant Payment</b>
+                          </div>
+                          <div>
+                              Tk.1070
+                          </div>
+                          <br>
+                      </div>
+                      <br><br><br>
+                      <p class="text-center text-white">Your Nagad Account Number</p>
+                      <br>
+                      <form >
+                          <div class="form-group">
+                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                          </div>
+                          <br>
+                          <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditions</p>
+                          <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
+                          <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
+                      </form>
+                      <br><br><br>
+                  </div>
+              </div>
+              <div class="row bkashpage" id="bkash" style="display: none;">
+                  <img src="bkashlogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
+                  <br><br>
+                  <div class="bkashcover">
+                      <br>
+                      <div class="bkashwhite">
+                          <br>
+                          <div class="row123">
+                              <div >
+                                  <i class="fa-solid fa-cart-shopping fa-xl"></i>
+                              </div>
+                              <div>
+                                  <b>TestCheckOutDemoMarchant1</b>
+                              </div>
+                              <div>
+                                  <b>Tk. 1078</b>
+                              </div>
+                          </div>
+                          <br>
+                      </div>
+                      <br><br><br>
+                      <p class="text-center text-white">Your Bkash Account Number</p>
+                      <br>
+                      <form >
+                          <div class="form-group">
+                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                          </div>
+                          <br>
+                          <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditiona</p>
+                          <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
+                          <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
+                      </form>
+                      <br><br><br>
+                  </div>
+              </div>
+              <div class="row rocketpage" id="rocket" style="display: none;">
+                  <img src="rocketlogo.png"  height="100px" width="350px">
+                  <br><br>
+                  <div class="rocketcover">
+                      <br>
+                      <div class="rocketwhite rounded text-center fs-4">
+                          <br>
+                          <div>
+                              <b>Marchant Payment</b>
+                          </div>
+                          <div>
+                              Tk.1070
+                          </div>
+                          <br>
+                      </div>
+                      <br><br><br>
+                      <p class="text-center text-white">Enter Rocket Account Number</p>
+                      <br>
+                      <form >
+                          <div class="form-group">
+                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                          </div>
+                          <br>
+                          <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditions</p>
+                          <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
+                          <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
+                      </form>
+                      <br><br><br>
+                  </div>
+              </div>
+              <div class="row upaypage" id="upay" style="display: none;">
+                  <img src="upaylogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
+                  <br><br>
+                  <div class="upaycover">
+                      <br>
+                      <div class="upaywhite rounded text-center fs-4">
+                          <br>
+                          <div>
+                              <b>Marchant Payment</b>
+                          </div>
+                          <div>
+                              Tk.1070
+                          </div>
+                          <br>
+                      </div>
+                      <br><br><br>
+                      <p class="text-center text-warning">Your UPAY Account Number</p>
+                      <br>
+                      <form >
+                          <div class="form-group">
+                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                          </div>
+                          <br>
+                          <p class="text-center text-warning">By clicking confirm, you are accepting our terms and conditions</p>
+                          <button class="btn2123 fw-bolder text-white" type="reset">CANCLE</button>
+                          <button class="btn2123 fw-bolder " type="submit">CONFIRM</button>
+                      </form>
+                      <br><br><br>
+                  </div>
+              </div>
+              <div class="row surecashpage" id="surecash" style="display: none;">
+                  <img src="surecashlogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="300px">
+                  <br><br>
+                  <div class="surecashcover">
+                      <br>
+                      <div class="surecashwhite rounded text-center fs-4">
+                          <br>
+                          <div>
+                              <b>Marchant Payment</b>
+                          </div>
+                          <div>
+                              Tk.1070
+                          </div>
+                          <br>
+                      </div>
+                      <br><br><br>
+                      <p class="text-center text-primary">Your Surecash Account Number</p>
+                      <br>
+                      <form >
+                          <div class="form-group">
+                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                          </div>
+                          <br>
+                          <p class="text-center text-primary">By clicking confirm, you are accepting our terms and conditions</p>
+                          <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
+                          <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
+                      </form>
+                      <br><br><br>
+                  </div>
+              </div>
+              <div class="row mcashpage" id="mcash" style="display: none;">
+                  <img src="mcashlogo.jpg" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
+                  <br><br>
+                  <div class="mcashcover">
+                      <br>
+                      <div class="mcashwhite rounded text-center fs-4">
+                          <br>
+                          <div>
+                              <b>Marchant Payment</b>
+                          </div>
+                          <div>
+                              Tk.1070
+                          </div>
+                          <br>
+                      </div>
+                      <br><br><br>
+                      <p class="text-center text-white">Your Mcash Account Number</p>
+                      <br>
+                      <form >
+                          <div class="form-group">
+                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                          </div>
+                          <br>
+                          <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditions</p>
+                          <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
+                          <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
+                      </form>
+                      <br><br><br>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <script>
+      function nagad(){
+          const nagad=document.getElementById('nagad');
+          const bkash=document.getElementById('bkash');
+          const rocket=document.getElementById('rocket');
+          const upay=document.getElementById('upay');
+          const surecash=document.getElementById('surecash');
+          const mcash=document.getElementById('mcash');
+          nagad.style.display = "block";
+          bkash.style.display="none";
+          rocket.style.display="none";
+          upay.style.display="none";
+          surecash.style.display="none";
+          mcash.style.display="none";
+      }
+      function bkash(){
+          const nagad=document.getElementById('nagad');
+          const bkash=document.getElementById('bkash');
+          const rocket=document.getElementById('rocket');
+          const upay=document.getElementById('upay');
+          const surecash=document.getElementById('surecash');
+          const mcash=document.getElementById('mcash');
+          nagad.style.display = "none";
+          bkash.style.display="block";
+          rocket.style.display="none";
+          upay.style.display="none";
+          surecash.style.display="none";
+          mcash.style.display="none";
+      }
+      function rocket(){
+          const nagad=document.getElementById('nagad');
+          const bkash=document.getElementById('bkash');
+          const rocket=document.getElementById('rocket');
+          const upay=document.getElementById('upay');
+          const surecash=document.getElementById('surecash');
+          const mcash=document.getElementById('mcash');
+          nagad.style.display = "none";
+          bkash.style.display="none";
+          rocket.style.display="block";
+          upay.style.display="none";
+          surecash.style.display="none";
+          mcash.style.display="none";
+      }
+      function upay(){
+          const nagad=document.getElementById('nagad');
+          const bkash=document.getElementById('bkash');
+          const rocket=document.getElementById('rocket');
+          const upay=document.getElementById('upay');
+          const surecash=document.getElementById('surecash');
+          const mcash=document.getElementById('mcash');
+          nagad.style.display = "none";
+          bkash.style.display="none";
+          rocket.style.display="none";
+          upay.style.display="block";
+          surecash.style.display="none";
+          mcash.style.display="none";
+      }
+      function surecash(){
+          const nagad=document.getElementById('nagad');
+          const bkash=document.getElementById('bkash');
+          const rocket=document.getElementById('rocket');
+          const upay=document.getElementById('upay');
+          const surecash=document.getElementById('surecash');
+          const mcash=document.getElementById('mcash');
+          nagad.style.display = "none";
+          bkash.style.display="none";
+          rocket.style.display="none";
+          upay.style.display="none";
+          surecash.style.display="block";
+          mcash.style.display="none";
+      }
+      function mcash(){
+          const nagad=document.getElementById('nagad');
+          const bkash=document.getElementById('bkash');
+          const rocket=document.getElementById('rocket');
+          const upay=document.getElementById('upay');
+          const surecash=document.getElementById('surecash');
+          const mcash=document.getElementById('mcash');
+          nagad.style.display = "none";
+          bkash.style.display="none";
+          rocket.style.display="none";
+          upay.style.display="none";
+          surecash.style.display="none";
+          mcash.style.display="block";
+      }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous">
+  </script>
 </body>
 </html>
