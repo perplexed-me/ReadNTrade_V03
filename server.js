@@ -260,36 +260,36 @@ app.get('/profile', async (req, res) => {
         //     toSellcount: result4[0][0],// || 0,
         //     orderCount: result5[0][0] //|| 0
         // });
-        let Money,SoldCount,ToSellcount,OrderCount;
+        let Money, SoldCount, ToSellcount, OrderCount;
         console.log(result4.length);
-        if(result2.length===0){
-            Money=0;
-        }else{
-            Money=result2;
+        if (result2.length === 0) {
+            Money = 0;
+        } else {
+            Money = result2;
         }
-        if(result3.length===0){
-            SoldCount=0;
-        }else{
-            SoldCount=result3;
+        if (result3.length === 0) {
+            SoldCount = 0;
+        } else {
+            SoldCount = result3;
         }
-        if(result4.length===0){
-            ToSellcount=0;
-        }else{
-            ToSellcount=result4;
+        if (result4.length === 0) {
+            ToSellcount = 0;
+        } else {
+            ToSellcount = result4;
         }
-        if(result5.length===0){
-            OrderCount=0;
-        }else{
-            OrderCount=result5;
+        if (result5.length === 0) {
+            OrderCount = 0;
+        } else {
+            OrderCount = result5;
         }
-        res.render('profile',{
+        res.render('profile', {
             detail: result1,
             userID: userID,
             userName: userName || null,
             money: Money,
             soldCount: SoldCount,
             toSellcount: ToSellcount,
-            orderCount : OrderCount
+            orderCount: OrderCount
         });
 
 
@@ -478,7 +478,7 @@ app.post('/home', async (req, res) => {
         // objectget=result.rows;
 
         connection.release();
-        console.log('Retrieved data:', result);
+        // console.log('Retrieved data:', result);
 
         res.render('home', {
             object: result.rows,
@@ -810,9 +810,13 @@ app.post('/sales', async (req, res) => {
     }
 });
 
+//############################################################
+//            Admin
+//############################################################
 
 
 
+// <<<<<<< HEAD
 //############################################################
 //                PAYMENT
 //############################################################
@@ -853,6 +857,64 @@ app.get('/payment',async(req,res)=>{
         console.log(err);
     }
 });
+// =======
+// User reports another user
+app.post('/report', async (req, res) => {
+    try {
+        const { adminID, accusedID, reporterID, cause } = req.body;
+
+        // First, check if the accusedID exists in the user database
+        let accusedExists = await runQuery(
+            `SELECT * FROM Users WHERE userID = :accusedID`,
+            { accusedID }
+        );
+
+        if (!accusedExists || accusedExists.length === 0) {
+            // The accusedID doesn't exist in the user database
+            return res.status(400).json({ error: 'Invalid accusedID' });
+        }
+
+        // Next, check if the combination of accusedID and reporterID already exists in the report database
+        let existingReport = await runQuery(
+            `SELECT * FROM Report WHERE accusedID = :accusedID AND reporterID = :reporterID`,
+            { accusedID, reporterID }
+        );
+
+        if (existingReport && existingReport.length > 0) {
+            // The combination already exists
+            return res.status(409).json({ error: 'Already reported' });
+        }
+
+        // If not, insert the new report
+        let result = await runQuery(
+            `INSERT INTO Report (adminID, accusedID, reporterID, cause) VALUES (:adminID, :accusedID, :reporterID, :cause)`,
+            { adminID, accusedID, reporterID, cause }
+        );
+
+        res.status(201).json({ message: 'Reported successfully!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Database operation failed.' });
+    }
+});
+
+app.get('/report', (req, res) => {
+    res.render('userReport');
+});
+app.get('/admin',async(req,res)=>{
+    res.render('adminReport')
+
+});
+// Admin views all reports
+app.get('/admin/reports', async (req, res) => {
+
+    const q = `SELECT * FROM Report`
+    let data = await runQuery(q, [])
+    // console.log(data)
+    res.json(data);
+});
+
+// >>>>>>> 7fd49ad (ektuAdmin)
 
 
 
@@ -929,13 +991,13 @@ app.post("/chatList", async (req, res) => {
 
         // Send the response as a JSON object containing the usernames and the messages
         // console.log('u1 ',user1ID,' u2 ',user2ID)
-        let senderName,receiverName;
-        if( sender_idd==user1ID){
-            senderName =userNames[user1ID]
+        let senderName, receiverName;
+        if (sender_idd == user1ID) {
+            senderName = userNames[user1ID]
             receiverName = userNames[user2ID]
-        } 
-        else{
-            senderName =userNames[user2ID]
+        }
+        else {
+            senderName = userNames[user2ID]
             receiverName = userNames[user1ID]
 
         }
@@ -988,11 +1050,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on('send_message', async (data) => {
-       
+
 
         const { senderID, receiverID, messageText } = data;
         console.log('se socket ', senderID, ' ', receiverID, ' ', messageText)
-        
+
 
         const insertMessageQuery = `
             INSERT INTO messages (senderID, receiverID, messageText, messageTime, isRead)
