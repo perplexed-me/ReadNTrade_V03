@@ -20,17 +20,18 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     email: formData.get('email'),
     password: formData.get('password')
   };
-  
+  // console.log(data)
 
   try {
     const response = await axios.post('/login', data);
   
-    //name from response
-    userID = response.data[0][0]
-    userName = response.data[0][4] +' '+ response.data[0][5]
-    // console.log(userID+' '+userName)
+   console.log(response.data,'    ',response.status)
     
     if (response.data && response.status === 200) { 
+       //name from response
+      userID = response.data[0][0]
+      userName = response.data[0][4] +' '+ response.data[0][5]
+    // console.log(userID+' '+userName)
       window.location.href = '/home';
     }
     else {
@@ -131,7 +132,7 @@ function reportUser() {
 
 
 //############################################################
-//              login clientSide
+//              login Admin
 //############################################################
 
 

@@ -10,6 +10,10 @@
 
 <body>
     <!-- Admin Section -->
+    <div id="notificationBar" class="notification-bar hidden">
+        <p id="notificationMessage"></p>
+    </div>
+
     <div class="admin-section">
         <h2>Admin Panel</h2>
         <button onclick="fetchReports()">View All Reports</button>
@@ -17,21 +21,27 @@
     </div>
 
     <script>
+        let accusedID, reporterID;
+
         function fetchReports() {
             fetch('/admin/reports')
                 .then(response => response.json())
                 .then(data => {
+                    // console.log(data)
                     const reportsDiv = document.getElementById('reports');
                     reportsDiv.innerHTML = '';
 
                     data.forEach(report => {
+                        accusedID = report[1];
+                        reporterID = report[2];
+
                         const reportDiv = document.createElement('div');
                         reportDiv.innerHTML = `
-                    Reported User: ${report[1]}, 
-                    Reporter: ${report[2]}, 
+                    Reported User: ${accusedID}, 
+                    Reporter: ${reporterID}, 
                     Cause: ${report[3]}
-                    <button onclick="sendWarning(${report[1]})">Send Warning</button>
-                    <button onclick="removeReport(${report[0]})">Remove</button>
+                    <button onclick="sendWarning(${accusedID})">Send Warning</button>
+                    <button onclick="removeReport(${accusedID},${reporterID})">Remove</button>
                 `;
                         reportsDiv.appendChild(reportDiv);
                     });
@@ -41,17 +51,57 @@
                     alert('Error fetching reports. Check the console for more details.');
                 });
         }
+        function showNotification(message) {
+            const notificationBar = document.getElementById('notificationBar');
+            const notificationMessage = document.getElementById('notificationMessage');
 
-        function sendWarning(userId) {
-            // Logic to send warning to the user with userId
-            console.log(`Sending warning to user ${userId}`);
-            // Example: You can make an API call here to send the warning
+            notificationMessage.textContent = message;
+            notificationBar.classList.remove('hidden');
+
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notificationBar.classList.add('hidden');
+            }, 3000);
         }
 
-        function removeReport(reportId) {
-            // Logic to remove the report with reportId
-            console.log(`Removing report ${reportId}`);
-            // Example: You can make an API call here to delete the report
+
+        function sendWarning(accusedId) {
+            fetch('/admin/sendWarning', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ accusedID: accusedId })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showNotification(`Warning sent successfully to ${accusedID} !`);
+                    } else {
+                        throw new Error('Failed to send warning');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error sending warning:", error);
+                    showNotification('Error sending warning. Check the console for more details.');
+                });
+        }
+
+        function removeReport(accusedID, reporterID) {
+            fetch(`/admin/removeReport/${accusedID}/${reporterID}`, {
+                method: 'DELETE',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showNotification(`Report removed successfully for accusedID ${accusedID} !`);
+                        fetchReports();
+                    } else {
+                        throw new Error('Failed to remove report');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error removing report:", error);
+                    showNotification('Error removing report. Check the console for more details.');
+                });
         }
 
     </script>

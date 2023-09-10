@@ -34,7 +34,7 @@ body:hover {
 .admin-section h2 {
     font-size: 2rem;
     margin-bottom: 20px;
-    color: #ffcc00; /* Vibrant Yellow for headings */
+    color: #e8c433; /* Vibrant Yellow for headings */
 }
 
 button {
@@ -84,4 +84,23 @@ button:hover {
 
 .admin-section div button:hover {
     background-color: #cc5200;
+}
+
+
+.notification-bar {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    color: #ff6600;
+    font-size: large;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
 }

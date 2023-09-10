@@ -49,7 +49,7 @@ function isAuthenticated(req, res, next) {
 //############################################################
 
 // use the isAuthenticated middleware for protected routes
-app.use(['/dashboard', '/home'], isAuthenticated);
+app.use(['/dashboard', '/home', '/chat', '/profile', '/message'], isAuthenticated);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -146,6 +146,7 @@ app.post('/login', async (req, res) => {
     try {
         const query = `SELECT * FROM users WHERE email=:email AND password=:password`;
         const result = await runQuery(query, { email, password });
+        console.log(result.length)
 
         if (result.length > 0) {
             req.session.user = {
@@ -159,13 +160,49 @@ app.post('/login', async (req, res) => {
         }
 
         else {
-            res.status(401).json({ message: 'Invalid credentials!' });
+            // res.send({ message: 'Invalid credentials!' });
+            res.status(201).json({ message: 'Invalid credentials!' });
         }
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ message: 'An error occurred during login.' });
     }
 });
+
+
+app.post('/admin', async (req, res) => {
+    const { email, password } = req.body;
+    console.log(req.body)
+
+    try {
+        const query = `SELECT * FROM Admins WHERE email=:email AND password=:password`;
+        const result = await runQuery(query, { email, password });
+
+        if (result.length > 0) {
+            req.session.user = {
+                email: email,
+                userID: result[0][0],
+                userName: result[0][4] + ' ' + result[0][5]
+            };
+            // console.log(req.session.user.userName)
+
+            res.send(result)
+        }
+
+        else {
+            res.status(201).json({ message: 'Invalid credentials!' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'An error occurred during login.' });
+    }
+});
+
+
+
+
+
+
 
 app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
@@ -230,7 +267,7 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
 
 
 
-app.get('/profile', async (req, res) => {
+app.get('/profile', isAuthenticated, async (req, res) => {
     try {
         let userID = req.session.user.userID;
         let userName = req.session.user.userName;
@@ -300,7 +337,7 @@ app.get('/profile', async (req, res) => {
 });
 
 
-app.post('/profile', async (req, res) => {
+app.post('/profile', isAuthenticated, async (req, res) => {
     try {
         let userID = req.session.user.userID;
         let userName = req.session.user.userName;
@@ -496,7 +533,7 @@ app.post('/home', async (req, res) => {
 //            Add
 //############################################################
 
-app.get('/add', (req, res) => {
+app.get('/add', isAuthenticated, (req, res) => {
     decide = 0;
     res.render('add', {
         decide: decide,
@@ -632,7 +669,7 @@ app.post('/removeFromCart', async (req, res) => {
 //############################################################
 //            Cart
 //############################################################
-app.get('/cart', async (req, res) => {
+app.get('/cart', isAuthenticated, async (req, res) => {
     try {
 
         const userID = req.session.user.userID;
@@ -679,7 +716,7 @@ app.get('/cart', async (req, res) => {
 //             Sales
 //############################################################
 
-app.get('/sales', async (req, res) => {
+app.get('/sales', isAuthenticated, async (req, res) => {
     try {
         decide = 1;
         const userID = req.session.user.userID;
@@ -743,7 +780,7 @@ app.post('/sales', async (req, res) => {
         const userID = req.session.user.userID;
 
         const bookName = req.body.remove;
-        console.log(bookName);
+        // console.log(bookName);
 
         const bindParams1 = {
             Title: { val: bookName, type: oracledb.STRING },
@@ -820,11 +857,11 @@ app.post('/sales', async (req, res) => {
 //############################################################
 //                PAYMENT
 //############################################################
-app.get('/payment',async(req,res)=>{
+app.get('/payment', isAuthenticated, async (req, res) => {
     try {
-        const userID= req.session.user.userID;
-        const sellerID=req.body.sellerID;
-        const bookID=req.body.bookID;
+        const userID = req.session.user.userID;
+        const sellerID = req.body.sellerID;
+        const bookID = req.body.bookID;
         const connection = await connectionPool.getConnection();
         const bindParams = {
             UserID: { val: userID, type: oracledb.NUMBER },
@@ -849,11 +886,11 @@ app.get('/payment',async(req,res)=>{
             FROM CART C WHERE C.BUYERID=:UserID AND C.SELLERID= :SellerID AND C.BOOKID=:BookID
             `;
         const result = await connection.execute(query, bindParams);
-        console.log(result.rows)
+        // console.log(result.rows)
         res.render('payment', {
             books: result.rows,
         });
-    } catch (err){
+    } catch (err) {
         console.log(err);
     }
 });
@@ -898,10 +935,14 @@ app.post('/report', async (req, res) => {
     }
 });
 
-app.get('/report', (req, res) => {
+app.get('/report', isAuthenticated, (req, res) => {
     res.render('userReport');
 });
-app.get('/admin',async(req,res)=>{
+app.get('/admin', async (req, res) => {
+    res.render('adminLogin')
+
+});
+app.get('/adminReport', async (req, res) => {
     res.render('adminReport')
 
 });
@@ -916,14 +957,39 @@ app.get('/admin/reports', async (req, res) => {
 
 // >>>>>>> 7fd49ad (ektuAdmin)
 
+app.post('/admin/sendWarning', async (req, res) => {
+    const accusedID = req.body.accusedID;
+    const queryR = `UPDATE Users SET reported = 1 WHERE userID = :accusedID`;
+    
+    try {
+        await runQuery(queryR, { accusedID });
+        console.log(`Sending warning to user with ID: ${accusedID}`);
+        res.status(200).json({ message: 'Warning sent successfully!' });
+    } catch (error) {
+        console.error('Error in /admin/sendWarning:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
-
+app.delete('/admin/removeReport/:accusedID/:reporterID', async (req, res) => {
+    const { accusedID, reporterID } = req.params;
+    const queryR = `DELETE FROM Report WHERE accusedID = :accusedID AND reporterID = :reporterID`;
+    
+    try {
+        await runQuery(queryR, { accusedID, reporterID });
+        console.log(`Removing report with accusedID: ${accusedID} and reporterID: ${reporterID}`);
+        res.status(200).json({ message: 'Report removed successfully!' });
+    } catch (error) {
+        console.error('Error in /admin/removeReport:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 //############################################################
 //             CHAT
 //############################################################
 
-app.get('/chat', async (req, res) => {
+app.get('/chat', isAuthenticated, async (req, res) => {
     const userID = req.session.user.userID;
     // console.log('id  ' , userID)
 

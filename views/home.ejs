@@ -232,11 +232,13 @@
                   // alert('Book added successfully!');
                   btn.disabled = true;
                   btn.innerText = 'Added to Cart';
-                } else {
+                } 
+                else {
                   alert('Already In Cart');
                 }
               })
               .catch(function (error) {
+      
                 alert('Failed to add the book. Please try again.');
               });
           });
