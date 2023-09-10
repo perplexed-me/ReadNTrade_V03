@@ -10,10 +10,9 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- <link rel="stylesheet" href="styleCart.css"> -->
   <link
     href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300&family=Lobster&family=Pacifico&display=swap"
     rel="stylesheet">
@@ -75,6 +74,8 @@
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <div>
+  <a href="/report" class="btn btn-primary" style="margin-left: 1190px;  background-color: brown; color: rgb(255, 255, 255);">Report</a>
+
       <h1>Book Details</h1>
       <table class="flash">
         <!-- Add the 'flash' class to the table -->
@@ -96,7 +97,7 @@
             <td><%= books[i][4] %></td>
             <td><%= books[i][5]  %> </td>
             <td><%= (books[i][6] * 100).toFixed(2) %>%</td>
-            <td><%= books[i][7] %></td>
+            <td style="color: blue;"><%= books[i][7] %> (ID: <%= books[i][1] %>)</td>
             <td>
               <button class="btn remove-from-cart-btn" data-book-id="<%= books[i][0] %>" data-seller-id="<%= books[i][1] %>">
                 <i class="fa-solid fa-trash fa-bounce fa-xl"></i>

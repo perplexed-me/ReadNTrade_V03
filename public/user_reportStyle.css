@@ -1,0 +1,102 @@
+/* Reset some default styles */
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color for the body */
+body {
+    background-color: #3a3a52; /* Dark shade of blue */
+    font-family: sans-serif;
+    color: #eaeaea; /* Light grey for better contrast against dark background */
+    transition: background-color 0.3s;
+}
+
+body:hover {
+    background-color: #2a2a3d; /* Slightly darken the background on hover */
+}
+
+/* Style the Report Section */
+.report-section {
+    width: 80%;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #5c5c74; /* Border color adjusted for the new palette */
+    background-color: #4a4a66; /* Darker shade of blue */
+    transition: box-shadow 0.3s, transform 0.3s;
+    border-radius: 10px;
+}
+
+.report-section:hover {
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.4); /* Increased shadow intensity */
+    transform: scale(1.02); /* Slight zoom in effect */
+}
+
+.report-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #ffcc00; /* Vibrant Yellow for headings */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #eaeaea;
+}
+
+input, textarea {
+    width: 95%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #d0d4da;
+    border-radius: 4px;
+    outline: none;
+    transition: border 0.3s, transform 0.3s;
+    background-color: #2a2a3d; /* Input background */
+    color: #fff; /* Text color */
+}
+
+input:hover, textarea:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    border-color: #ffcc00; /* Border color matches heading */
+}
+
+input:focus, textarea:focus {
+    border-color: #ffcc00; /* Border color matches heading */
+}
+
+textarea {
+    min-height: 250px;
+    resize: none;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #ff6600; /* Vibrant Orange */
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.3s, background-color 0.3s;
+    border-radius: 8px;
+}
+
+button:hover {
+    background-color: #cc5200; /* Darker shade of orange for hover */
+    transform: translateY(-3px);
+}
+
+#notification {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #ffffff; /* Notification background color */
+    margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .report-section {
+        padding: 20px;
+    }
+}

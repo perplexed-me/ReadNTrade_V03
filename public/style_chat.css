@@ -4,7 +4,7 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    background-color: #d1d1d1; 
+    background-color: #000000; 
 }
 
 #chat-container {

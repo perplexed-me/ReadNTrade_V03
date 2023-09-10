@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Report Panel</title>
+    <link rel="stylesheet" href="/admin_reportStyle.css">
+</head>
+
+<body>
+    <!-- Admin Section -->
+    <div id="notificationBar" class="notification-bar hidden">
+        <p id="notificationMessage"></p>
+    </div>
+
+    <div class="admin-section">
+        <h2>Admin Panel</h2>
+        <button onclick="fetchReports()">View All Reports</button>
+        <div id="reports"></div>
+    </div>
+
+    <script>
+        let accused_id, reporter_id;
+
+        function fetchReports() {
+            
+            fetch('/admin/reports')
+                .then(response => response.json())
+                .then(data => {
+                    // console.log(data)
+                    const reportsDiv = document.getElementById('reports');
+                    reportsDiv.innerHTML = '';
+
+                    data.forEach(report => {
+                        accused_id = report[1];
+                        reporter_id = report[2];
+
+                        const reportDiv = document.createElement('div');
+                        reportDiv.innerHTML = `
+                    Reported User: ${accused_id}, 
+                    Reporter: ${reporter_id}, 
+                    Cause: ${report[3]}
+                    <button onclick="sendWarning(${accused_id})">Send Warning</button>
+                    <button onclick="removeReport(${accused_id},${reporter_id})">Remove</button>
+                `;
+                        reportsDiv.appendChild(reportDiv);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching reports:", error);
+                    alert('Error fetching reports. Check the console for more details.');
+                });
+        }
+        function showNotification(message) {
+            const notificationBar = document.getElementById('notificationBar');
+            const notificationMessage = document.getElementById('notificationMessage');
+
+            notificationMessage.textContent = message;
+            notificationBar.classList.remove('hidden');
+
+            // Hide notification after 3 seconds
+            setTimeout(() => {
+                notificationBar.classList.add('hidden');
+            }, 3000);
+        }
+
+
+        function sendWarning(accused_id) {
+            fetch('/admin/sendWarning', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ accusedID: accused_id })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showNotification(`Warning sent successfully to ${accused_id} !`);
+                    } else {
+                        throw new Error('Failed to send warning');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error sending warning:", error);
+                    showNotification('Error sending warning. Check the console for more details.');
+                });
+        }
+
+        function removeReport(accusedID, reporterID) {
+            fetch(`/admin/removeReport/${accusedID}/${reporterID}`, {
+                method: 'DELETE',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showNotification(`Report removed successfully for accusedID ${accusedID} !`);
+                        fetchReports();
+                    } else {
+                        throw new Error('Failed to remove report');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error removing report:", error);
+                    showNotification('Error removing report. Check the console for more details.');
+                });
+        }
+
+    </script>
+</body>
+
+</html>
