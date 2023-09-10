@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="rnt.png" type="image/x-icon" />
+  <link rel="icon" href="/imageS/rnt.png" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -23,7 +23,7 @@
   <div class="row">
     <nav class="navbar navbar-expand-lg ">
       <div class="container">
-        <a class="navbar-brand" href="/add">
+        <a class="navbar-brand px-5" href="/add">
           <img src="/imageS/icon.png" class="img-icon" alt="Responsive image" height="50px" width="50px">
           ReadNTrade
         </a>
@@ -72,55 +72,55 @@
         </div>
       </div>
     </nav>
-    <div class="container">
+    <div class="container ">
       <div class="row add1 mx-auto text-center">
         <br><br><br><br><br><br><br><br><br>
         <h1 class="add2">Add Books</h1>
       </div>
-      <div claas="row add1 mx-auto text-center">
+      <div claas="row add1 px-5 mx-5 text-center">
         <% if (decide===1) { %>
           <h3 class="add3">Added Successfully</h3>
           <% } %>
       </div>
-      <div class="container">
-        <form action="/add" method="post">
+      <div class="container ">
+        <form class="mx-5 px-5" action="/add" method="post">
           <div class="form-group row my-2">
             <label for="Title" class="col-sm-2 col-form-label">Title</label>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
               <input type="text" class="form-control" id="Title" name="Title" placeholder="Add Title" required>
             </div>
           </div>
           <div class="form-group row my-2">
             <label for="Author" class="col-sm-2 col-form-label">Author</label>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
               <input type="text" class="form-control" id="Author" name="Author" Publisher placeholder="Add Author"
                 required>
             </div>
           </div>
           <div class="form-group row my-2">
             <label for="Publisher" class="col-sm-2 col-form-label">Publisher</label>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
               <input type="text" class="form-control" id="Publisher" name="Publisher" placeholder="Add Publisher"
                 required>
             </div>
           </div>
           <div class="form-group row my-2">
             <label for="Year" class="col-sm-2 col-form-label">Year</label>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
               <input type="Number" class="form-control" min="1950" max="2030" id="Year" name="Year"
                 placeholder="Add Year" required>
             </div>
           </div>
           <div class="form-group row my-2">
             <label for="Price" class="col-sm-2 col-form-label">Price</label>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
               <input type="number" class="form-control" id="Price" min="0" name="Price" placeholder="Add Price"
                 required>
             </div>
           </div>
           <div class="form-group row my-2">
             <label for="Discount" class="col-sm-2 col-form-label">Discount(%)</label>
-            <div class="col-sm-8">
+            <div class="col-sm-10">
               <input type="number" class="form-control" min="0" id="Discount" name="Discount" placeholder="Add Discount"
                 required>
             </div>
