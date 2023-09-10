@@ -49,7 +49,7 @@ function isAuthenticated(req, res, next) {
 //############################################################
 
 // use the isAuthenticated middleware for protected routes
-app.use(['/dashboard', '/home'], isAuthenticated);
+app.use(['/dashboard', '/home', '/chat', '/profile', '/message','/report'], isAuthenticated);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -146,6 +146,7 @@ app.post('/login', async (req, res) => {
     try {
         const query = `SELECT * FROM users WHERE email=:email AND password=:password`;
         const result = await runQuery(query, { email, password });
+        // console.log(result.length)
 
         if (result.length > 0) {
             req.session.user = {
@@ -159,13 +160,46 @@ app.post('/login', async (req, res) => {
         }
 
         else {
-            res.status(401).json({ message: 'Invalid credentials!' });
+            // res.send({ message: 'Invalid credentials!' });
+            res.status(201).json({ message: 'Invalid credentials!' });
         }
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ message: 'An error occurred during login.' });
     }
 });
+
+
+app.post('/admin', async (req, res) => {
+    const { email, password } = req.body;
+    // console.log(req.body)
+
+    try {
+        const query = `SELECT * FROM Admins WHERE email=:email AND password=:password`;
+        const result = await runQuery(query, { email, password });
+
+        if (result.length > 0) {
+            req.session.user = {
+                email: email,
+                userID: result[0][0],
+                userName: result[0][4] + ' ' + result[0][5]
+            };
+            // console.log(req.session.user.userName)
+
+            res.send(result)
+        }
+
+        else {
+            res.status(201).json({ message: 'Invalid credentials!' });
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ message: 'An error occurred during login.' });
+    }
+});
+
+
+
 
 app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
@@ -222,22 +256,9 @@ app.get('/signup', (req, res) => {
 
 
 
-/*
-app.get('/dashboard', isAuthenticated, async (req, res) => {
-    try {
-        const queryR = `SELECT * FROM locations`;
-        const queryData = await runQuery(queryR, []);
-        res.render('dashboard', { queryData });
-    } catch (error) {
-        console.error('Error while fetching data:', error);
-        res.status(500).send('An error occurred while fetching data.');
-    }
-});
-*/
 
 
-
-app.get('/profile', async (req, res) => {
+app.get('/profile', isAuthenticated, async (req, res) => {
     try {
         let userID = req.session.user.userID;
         let userName = req.session.user.userName; 
@@ -255,48 +276,37 @@ app.get('/profile', async (req, res) => {
         ];
 
         const [result1, result2, result3, result4, result5] = await runQueries(queries, bindParams);
-        // console.log(result2);
-        // console.log(result3);
-        // console.log(result4);
-        // res.render('profile', {
-        //     detail: result1,
-        //     userID: userID,
-        //     userName: userName || null,
-        //     money: result2[0][0] ,//|| 0,
-        //     soldCount: result3[0][0],// || 0,
-        //     toSellcount: result4[0][0],// || 0,
-        //     orderCount: result5[0][0] //|| 0
-        // });
-        let Money,SoldCount,ToSellcount,OrderCount;
-        console.log(result4.length);
-        if(result2.length===0){
-            Money=0;
-        }else{
-            Money=result2;
+    
+        let Money, SoldCount, ToSellcount, OrderCount;
+        // console.log(result4.length);
+        if (result2.length === 0) {
+            Money = 0;
+        } else {
+            Money = result2;
         }
-        if(result3.length===0){
-            SoldCount=0;
-        }else{
-            SoldCount=result3;
+        if (result3.length === 0) {
+            SoldCount = 0;
+        } else {
+            SoldCount = result3;
         }
-        if(result4.length===0){
-            ToSellcount=0;
-        }else{
-            ToSellcount=result4;
+        if (result4.length === 0) {
+            ToSellcount = 0;
+        } else {
+            ToSellcount = result4;
         }
-        if(result5.length===0){
-            OrderCount=0;
-        }else{
-            OrderCount=result5;
+        if (result5.length === 0) {
+            OrderCount = 0;
+        } else {
+            OrderCount = result5;
         }
-        res.render('profile',{
+        res.render('profile', {
             detail: result1,
             userID: userID,
             userName: userName || null,
             money: Money,
             soldCount: SoldCount,
             toSellcount: ToSellcount,
-            orderCount : OrderCount
+            orderCount: OrderCount
         });
 
 
@@ -307,7 +317,7 @@ app.get('/profile', async (req, res) => {
 });
 
 
-app.post('/profile', async (req, res) => {
+app.post('/profile', isAuthenticated, async (req, res) => {
     try {
         let userID = req.session.user.userID;
         let userName = req.session.user.userName;
@@ -411,7 +421,9 @@ app.get('/home', isAuthenticated, async (req, res) => {
         const profiles = await runQuery(query, { email: userEmail });
 
         req.session.profiles = profiles;
+        // console.log(profiles)
         let userID = profiles[0][0];
+        let isReported = profiles[0][7];
         // console.log(userID);
         let userName = profiles[0][4] + " " + profiles[0][5]
         // console.log(name)
@@ -423,6 +435,7 @@ app.get('/home', isAuthenticated, async (req, res) => {
                 userID: userID,
                 userName: userName,
                 decide: 0,
+                isReported: isReported,
                 object: null,
             });
         }
@@ -485,7 +498,7 @@ app.post('/home', async (req, res) => {
         // objectget=result.rows;
 
         connection.release();
-        console.log('Retrieved data:', result);
+        // console.log('Retrieved data:', result);
 
         res.render('home', {
             object: result.rows,
@@ -503,7 +516,7 @@ app.post('/home', async (req, res) => {
 //            Add
 //############################################################
 
-app.get('/add', (req, res) => {
+app.get('/add', isAuthenticated, (req, res) => {
     decide = 0;
     res.render('add', {
         decide: decide,
@@ -666,7 +679,7 @@ app.post('/removeFromCart', async (req, res) => {
 //############################################################
 //            Cart
 //############################################################
-app.get('/cart', async (req, res) => {
+app.get('/cart', isAuthenticated, async (req, res) => {
     try {
 
         const userID = req.session.user.userID;
@@ -691,7 +704,7 @@ app.get('/cart', async (req, res) => {
         FROM CART C WHERE BUYERID=:UserID
         `;
         const result = await connection.execute(query, bindParams);
-        console.log(result.rows)
+        // console.log(result.rows)
         res.render('cart', {
             books: result.rows,
         });
@@ -712,7 +725,7 @@ app.get('/cart', async (req, res) => {
 //             Sales
 //############################################################
 
-app.get('/sales', async (req, res) => {
+app.get('/sales', isAuthenticated, async (req, res) => {
     try {
         decide = 1;
         const userID = req.session.user.userID;
@@ -776,7 +789,7 @@ app.post('/sales', async (req, res) => {
         const userID = req.session.user.userID;
 
         const bookName = req.body.remove;
-        console.log(bookName);
+        // console.log(bookName);
 
         const bindParams1 = {
             Title: { val: bookName, type: oracledb.STRING },
@@ -843,20 +856,71 @@ app.post('/sales', async (req, res) => {
     }
 });
 
+//############################################################
+//            Admin
+//############################################################
+
+app.get('/admin', async (req, res) => {
+    res.render('adminLogin')
+
+});
+app.get('/adminReport', async (req, res) => {
+    res.render('adminReport')
+
+});
+// Admin views all reports
+app.get('/admin/reports', async (req, res) => {
+
+    const q = `SELECT * FROM Report`
+    let data = await runQuery(q, [])
+    // console.log(data)
+    res.json(data);
+});
+
+
+
+app.post('/admin/sendWarning', async (req, res) => {
+    const accusedID = req.body.accusedID;
+    const queryR = `UPDATE Users SET reported = 1 WHERE userID = :accusedID`;
+    
+    try {
+        await runQuery(queryR, { accusedID });
+        console.log(`Sending warning to user with ID: ${accusedID}`);
+        res.status(200).json({ message: 'Warning sent successfully!' });
+    } catch (error) {
+        console.error('Error in /admin/sendWarning:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.delete('/admin/removeReport/:accusedID/:reporterID', async (req, res) => {
+    const { accusedID, reporterID } = req.params;
+    
+    const queryR = `DELETE FROM Report WHERE accusedID = :accusedID AND reporterID = :reporterID`;
+
+    try {
+        const results = await runQuery(queryR, { accusedID, reporterID });
+
+        console.log(`Removing report with accusedID: ${accusedID} and reporterID: ${reporterID}`);
+        res.status(200).json({ message: 'Appology accepted and report removed successfully!' });
+
+    } catch (error) {
+        console.error('Error in /admin/removeReport:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 
 
 //############################################################
 //                PAYMENT
 //############################################################
-app.post('/payment',async(req,res)=>{
+app.get('/payment', isAuthenticated, async (req, res) => {
     try {
-        const userID= req.session.user.userID;
-        const sellerID=parseInt(req.body.sellerID, 10);
-        const bookID=parseInt(req.body.bookID, 10);
-        console.log(userID);
-        console.log(bookID);
-        console.log(sellerID);
+        const userID = req.session.user.userID;
+        const sellerID = req.body.sellerID;
+        const bookID = req.body.bookID;
         const connection = await connectionPool.getConnection();
         const bindParams = {
             UserID: { val: userID, type: oracledb.NUMBER },
@@ -884,10 +948,11 @@ app.post('/payment',async(req,res)=>{
             `;
         const result = await connection.execute(query, bindParams);
         console.log(result.rows);
+        // console.log(result.rows)
         res.render('payment', {
             books: result.rows,
         });
-    } catch (err){
+    } catch (err) {
         console.log(err);
     }
 });
@@ -934,13 +999,55 @@ app.post('/buy',async(req,res)=>{
         res.json({ success: false, message: 'Failed to remove the book' });
    }
 });
+// User reports another user
+app.post('/report', isAuthenticated, async (req, res) => {
+    try {
+        const { adminID, accusedID, reporterID, cause } = req.body;
 
+        // First, check if the accusedID exists in the user database
+        let accusedExists = await runQuery(
+            `SELECT * FROM Users WHERE userID = :accusedID`,
+            { accusedID }
+        );
+
+        if (!accusedExists || accusedExists.length === 0) {
+            // The accusedID doesn't exist in the user database
+            return res.status(400).json({ error: 'Invalid accusedID' });
+        }
+
+        // Next, check if the combination of accusedID and reporterID already exists in the report database
+        let existingReport = await runQuery(
+            `SELECT * FROM Report WHERE accusedID = :accusedID AND reporterID = :reporterID`,
+            { accusedID, reporterID }
+        );
+
+        if (existingReport && existingReport.length > 0) {
+            // The combination already exists
+            return res.status(409).json({ error: 'Already reported' });
+        }
+
+        // If not, insert the new report
+        let result = await runQuery(
+            `INSERT INTO Report (adminID, accusedID, reporterID, cause) VALUES (:adminID, :accusedID, :reporterID, :cause)`,
+            { adminID, accusedID, reporterID, cause }
+        );
+
+        res.status(201).json({ message: 'Reported successfully!' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Database operation failed.' });
+    }
+});
+
+app.get('/report', isAuthenticated, (req, res) => {
+    res.render('userReport');
+});
 
 //############################################################
 //             CHAT
 //############################################################
 
-app.get('/chat', async (req, res) => {
+app.get('/chat', isAuthenticated, async (req, res) => {
     const userID = req.session.user.userID;
     // console.log('id  ' , userID)
 
@@ -1008,13 +1115,13 @@ app.post("/chatList", async (req, res) => {
 
         // Send the response as a JSON object containing the usernames and the messages
         // console.log('u1 ',user1ID,' u2 ',user2ID)
-        let senderName,receiverName;
-        if( sender_idd==user1ID){
-            senderName =userNames[user1ID]
+        let senderName, receiverName;
+        if (sender_idd == user1ID) {
+            senderName = userNames[user1ID]
             receiverName = userNames[user2ID]
-        } 
-        else{
-            senderName =userNames[user2ID]
+        }
+        else {
+            senderName = userNames[user2ID]
             receiverName = userNames[user1ID]
 
         }
@@ -1067,11 +1174,11 @@ io.on("connection", (socket) => {
     });
 
     socket.on('send_message', async (data) => {
-       
+
 
         const { senderID, receiverID, messageText } = data;
         console.log('se socket ', senderID, ' ', receiverID, ' ', messageText)
-        
+
 
         const insertMessageQuery = `
             INSERT INTO messages (senderID, receiverID, messageText, messageTime, isRead)

@@ -20,17 +20,18 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     email: formData.get('email'),
     password: formData.get('password')
   };
-  
+  // console.log(data)
 
   try {
     const response = await axios.post('/login', data);
   
-    //name from response
-    userID = response.data[0][0]
-    userName = response.data[0][4] +' '+ response.data[0][5]
-    // console.log(userID+' '+userName)
+   console.log(response.data,'    ',response.status)
     
     if (response.data && response.status === 200) { 
+       //name from response
+      userID = response.data[0][0]
+      userName = response.data[0][4] +' '+ response.data[0][5]
+    // console.log(userID+' '+userName)
       window.location.href = '/home';
     }
     else {
@@ -85,12 +86,53 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
 });
 
 //############################################################
-//              login clientSide
+//              User Report
 //############################################################
+
+function reportUser() {
+  const accusedID = document.getElementById('accusedID').value;
+  const cause = document.getElementById('cause').value;
+  const notification = document.getElementById('notification');
+
+  fetch('/report', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          adminID: 1,
+          accusedID: accusedID,
+          reporterID: 242,
+          cause: cause
+      })
+  })
+      .then(response => {
+          // Check if the response is successful
+          if (!response.ok) {
+              // If not, get the error message from the response and throw it
+              return response.json().then(err => { throw err; });
+          }
+          return response.json();
+      })
+      .then(data => {
+          notification.textContent = data.message;
+          notification.style.color = 'green'; // Display message in green color
+      })
+      .catch(error => {
+          if (error && error.error === 'Already reported') {
+              notification.textContent = 'You have already reported this user.';
+          } else if (error && error.error === 'Invalid accusedID') {
+              notification.textContent = 'The accused user ID is invalid.';
+          } else {
+              notification.textContent = 'Error reporting the user.';
+          }
+          notification.style.color = 'red'; // Display error messages in red color
+      });
+}
 
 
 //############################################################
-//              login clientSide
+//              login Admin
 //############################################################
 
 

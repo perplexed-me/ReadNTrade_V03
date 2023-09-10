@@ -211,8 +211,14 @@
                   Hi <span class="user-name">
                     <%= userName %>
                   </span>!
+                  <% if (isReported == 1) { %>
+                    <h5 style="color: red;">You have been reported !!!</h5>
+                <% } %>
+            
+                
 
                 </div>
+
                 <% } %>
 
       </div>
@@ -232,11 +238,13 @@
                   // alert('Book added successfully!');
                   btn.disabled = true;
                   btn.innerText = 'Added to Cart';
-                } else {
+                } 
+                else {
                   alert('Already In Cart');
                 }
               })
               .catch(function (error) {
+      
                 alert('Failed to add the book. Please try again.');
               });
           });
