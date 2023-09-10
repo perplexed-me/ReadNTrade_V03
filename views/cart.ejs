@@ -103,7 +103,7 @@
               </button>
             </td>
             <td>
-              <form action="/payment" method="get">
+              <form action="/payment" method="post">
                 <input type="hidden" name="bookID" value="<%= books[i][0] %>">
                 <input type="hidden" name="sellerID" value="<%= books[i][1] %>">
                 <button class="btn" type="submit">
@@ -121,8 +121,7 @@
     btn.addEventListener('click', function() {
         const bookID = this.getAttribute('data-book-id');
         const sellerID = this.getAttribute('data-seller-id');
-        console.log('s id ', sellerID)
-        
+        console.log('s id ', sellerID);
         axios.post('/removeFromCart', { bookID: bookID, sellerID: sellerID })
             .then(function(response) {
                 if (response.data.success) {

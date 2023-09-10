@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="rnt.png" type="image/x-icon" />
+    <link rel="icon" href="./rnt.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
       integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
       crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style_pay.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- <link rel="stylesheet" href="styleCart.css"> -->
@@ -19,9 +19,104 @@
     <title>ReadNTrade</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container  m-2">
+      <nav class="navbar navbar-expand-lg ">
+        <div class="container">
+          <a class="navbar-brand text-center" href="/sales">
+            <img src="/imageS/icon.png" class="img-icon" alt="Responsive image" height="50px" width="50px">
+            ReadNTrade
+          </a>
+          <p class="navbar-brand fs-1 mx-5"><b>Payment Gateway</b> </p>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse justify-content-end navbar-collapse" id="navbarScroll">
+            <ul class="navbar-nav m-auto my-2 my-lg-0">
+              <li class="nav-item">
+                <a class="nav-link " href="/home">
+                    <i class="fa-solid fa-house"></i>
+                    Home
+                </a>
+              </li>
+              <li class="nav-item">
+                &nbsp;&nbsp;&nbsp;
+              </li>
+              <li class="nav-item ">
+                &nbsp;&nbsp;&nbsp;
+              </li>
+              <li class="nav-item">
+                &nbsp;&nbsp;&nbsp;
+              </li>
+              <li class="nav-item">
+                &nbsp;&nbsp;&nbsp; 
+              </li>
+              <li class="nav-item">
+                <a class="nav-link btn btn-primary " href="/cart" >
+                    Back
+                </a>
+              </li>
+            </ul>
+        </div>
+      </nav>
       <div class="row">
-          <div class="col-7 ">
+          <div class="col-8">
+            <% let price =parseInt(books[0][6]-books[0][6]*books[0][7],10); %>
+              <div class="row rounded justify-content-center mt-5 ">
+                  <div class="col-5 image-container p-2 text-center ">
+                    <img src="<%= books[0][9] %>" alt="image1">
+                    <img class="default-image img1"  src="/imageS/default.png" alt="Default Image" style="display: none;">
+                  </div>
+                  <div class="col-9 pl-4 py-0 pr-0 m-0">
+                    <div class="row bg-info py-2">
+                      <div class="col-3">
+                        <b>Book Name : </b>
+                      </div>
+                      <div class="col-9 ">
+                        <b><i><%=books[0][3]%></i></b>
+                      </div>
+                    </div>
+                    <div class="row bg-info py-2">
+                      <div class="col-3 ">
+                        <b>Author Name :</b>
+                      </div>
+                      <div class="col-9 ">
+                        <b><i><%=books[0][4]%></i></b> 
+                      </div>
+                    </div>
+                    <div class="row bg-info py-2">
+                      <div class="col-3">
+                        <b>Publisher Name : </b>
+                      </div>
+                      <div class="col-9 ">
+                        <b><i><%=books[0][5]%></i></b>
+                      </div>
+                    </div>
+                    <div class="row bg-info py-2">
+                      <div class="col-3">
+                        <b>Actual Price : </b>
+                      </div>
+                      <div class="col-9 ">
+                        <b><i><%=books[0][6]%></i></b>
+                      </div>
+                    </div>
+                    <div class="row bg-info py-2">
+                      <div class="col-3">
+                        <b>Price(discounted) : </b>
+                      </div>
+                      <div class="col-9 ">
+                        <b><i><%=price%></i></b>
+                      </div>
+                    </div>
+                    <div class="row bg-info py-2">
+                      <div class="col-3">
+                        <b>Seller : </b>
+                      </div>
+                      <div class="col-9 ">
+                        <b><i><%=books[0][8]%></i></b>
+                      </div>
+                    </div>
+                  </div>
+              </div>
               <div class="row d-flex justify-content-center">
                   <div class="col-2 paymargin">
                       <button type="button" class="btn nagad fw-bolder " onclick="nagad()">
@@ -57,10 +152,9 @@
                   </div>
               </div>
           </div>
-          <div class="col-5">
-              <div class="row nagadpage" id="nagad" style="display: none;">
-                  <img src="nagad.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
-                  <br><br>
+          <div class="col-4">
+              <div class="row nagadpage" id="nagad" style="display: block;">
+                  <img src="/imageS/nagad.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
                   <div class="nagadcover">
                       <br>
                       <div class="nagadwhite rounded text-center fs-4">
@@ -69,19 +163,23 @@
                               <b>Marchant Payment</b>
                           </div>
                           <div>
-                              Tk.1070
+                              Tk.<%=price%>
                           </div>
                           <br>
                       </div>
                       <br><br><br>
                       <p class="text-center text-white">Your Nagad Account Number</p>
                       <br>
-                      <form >
+                      <form id="myForm1">
                           <div class="form-group">
-                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                              <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{5}" required class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
                           </div>
                           <br>
                           <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditions</p>
+                          <input type="hidden" id="book1" value="<%= books[0][0] %>"> 
+                          <input type="hidden" id="buyer1" value="<%= books[0][1] %>">
+                          <input type="hidden" id="seller1" value="<%= books[0][2] %>">
+                          <input type="hidden" id="price1" value="<%=price%>">
                           <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
                           <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
                       </form>
@@ -89,34 +187,32 @@
                   </div>
               </div>
               <div class="row bkashpage" id="bkash" style="display: none;">
-                  <img src="bkashlogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
-                  <br><br>
+                  <img src="/imageS/bkashlogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
                   <div class="bkashcover">
                       <br>
-                      <div class="bkashwhite">
-                          <br>
-                          <div class="row123">
-                              <div >
-                                  <i class="fa-solid fa-cart-shopping fa-xl"></i>
-                              </div>
-                              <div>
-                                  <b>TestCheckOutDemoMarchant1</b>
-                              </div>
-                              <div>
-                                  <b>Tk. 1078</b>
-                              </div>
-                          </div>
-                          <br>
-                      </div>
+                      <div class="bkashwhite rounded text-center fs-4">
+                        <br>
+                        <div>
+                            <b>Marchant Payment</b>
+                        </div>
+                        <div>
+                            Tk.<%=price%>
+                        </div>
+                        <br>
+                    </div>
                       <br><br><br>
                       <p class="text-center text-white">Your Bkash Account Number</p>
                       <br>
-                      <form >
+                      <form id="myForm2">
                           <div class="form-group">
-                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                              <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{5}" required class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
                           </div>
                           <br>
                           <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditiona</p>
+                          <input type="hidden" id="book2" value="<%= books[0][0] %>"> 
+                          <input type="hidden" id="buyer2" value="<%= books[0][1] %>">
+                          <input type="hidden" id="seller2" value="<%= books[0][2] %>">
+                          <input type="hidden" id="price2" value="<%=price%>">
                           <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
                           <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
                       </form>
@@ -124,8 +220,7 @@
                   </div>
               </div>
               <div class="row rocketpage" id="rocket" style="display: none;">
-                  <img src="rocketlogo.png"  height="100px" width="350px">
-                  <br><br>
+                  <img src="/imageS/rocketlogo.png"  height="100px" width="350px">
                   <div class="rocketcover">
                       <br>
                       <div class="rocketwhite rounded text-center fs-4">
@@ -134,19 +229,23 @@
                               <b>Marchant Payment</b>
                           </div>
                           <div>
-                              Tk.1070
+                              Tk.<%=price%>
                           </div>
                           <br>
                       </div>
                       <br><br><br>
                       <p class="text-center text-white">Enter Rocket Account Number</p>
                       <br>
-                      <form >
+                      <form id="myForm3">
                           <div class="form-group">
-                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                              <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{5}" required class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
                           </div>
                           <br>
                           <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditions</p>
+                          <input type="hidden" id="book3" value="<%= books[0][0] %>"> 
+                          <input type="hidden" id="buyer3" value="<%= books[0][1] %>">
+                          <input type="hidden" id="seller3" value="<%= books[0][2] %>">
+                          <input type="hidden" id="price3" value="<%=price%>">
                           <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
                           <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
                       </form>
@@ -154,8 +253,7 @@
                   </div>
               </div>
               <div class="row upaypage" id="upay" style="display: none;">
-                  <img src="upaylogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
-                  <br><br>
+                  <img src="/imageS/upaylogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
                   <div class="upaycover">
                       <br>
                       <div class="upaywhite rounded text-center fs-4">
@@ -164,19 +262,23 @@
                               <b>Marchant Payment</b>
                           </div>
                           <div>
-                              Tk.1070
+                              Tk.<%=price%>
                           </div>
                           <br>
                       </div>
                       <br><br><br>
                       <p class="text-center text-warning">Your UPAY Account Number</p>
                       <br>
-                      <form >
+                      <form id="myForm4">
                           <div class="form-group">
-                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                              <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{5}" required class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
                           </div>
                           <br>
                           <p class="text-center text-warning">By clicking confirm, you are accepting our terms and conditions</p>
+                          <input type="hidden" id="book4" value="<%= books[0][0] %>"> 
+                          <input type="hidden" id="buyer4" value="<%= books[0][1] %>">
+                          <input type="hidden" id="seller4" value="<%= books[0][2] %>">
+                          <input type="hidden" id="price4" value="<%=price%>">
                           <button class="btn2123 fw-bolder text-white" type="reset">CANCLE</button>
                           <button class="btn2123 fw-bolder " type="submit">CONFIRM</button>
                       </form>
@@ -184,8 +286,7 @@
                   </div>
               </div>
               <div class="row surecashpage" id="surecash" style="display: none;">
-                  <img src="surecashlogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="300px">
-                  <br><br>
+                  <img src="/imageS/surecashlogo.png" class="img-icon text-center" alt="Responsive image" height="100px" width="300px">
                   <div class="surecashcover">
                       <br>
                       <div class="surecashwhite rounded text-center fs-4">
@@ -194,19 +295,23 @@
                               <b>Marchant Payment</b>
                           </div>
                           <div>
-                              Tk.1070
+                              Tk.<%=price%>
                           </div>
                           <br>
                       </div>
                       <br><br><br>
                       <p class="text-center text-primary">Your Surecash Account Number</p>
                       <br>
-                      <form >
+                      <form id="myForm5">
                           <div class="form-group">
-                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                              <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{5}" required class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
                           </div>
                           <br>
                           <p class="text-center text-primary">By clicking confirm, you are accepting our terms and conditions</p>
+                          <input type="hidden" id="book5" value="<%= books[0][0] %>"> 
+                          <input type="hidden" id="buyer5" value="<%= books[0][1] %>">
+                          <input type="hidden" id="seller5" value="<%= books[0][2] %>">
+                          <input type="hidden" id="price5" value="<%=price%>">
                           <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
                           <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
                       </form>
@@ -214,8 +319,7 @@
                   </div>
               </div>
               <div class="row mcashpage" id="mcash" style="display: none;">
-                  <img src="mcashlogo.jpg" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
-                  <br><br>
+                  <img src="/imageS/mcashlogo.jpg" class="img-icon text-center" alt="Responsive image" height="100px" width="80px">
                   <div class="mcashcover">
                       <br>
                       <div class="mcashwhite rounded text-center fs-4">
@@ -224,19 +328,23 @@
                               <b>Marchant Payment</b>
                           </div>
                           <div>
-                              Tk.1070
+                              Tk.<%=price%>
                           </div>
                           <br>
                       </div>
                       <br><br><br>
                       <p class="text-center text-white">Your Mcash Account Number</p>
                       <br>
-                      <form >
+                      <form id="myForm6">
                           <div class="form-group">
-                              <input type="text" class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
+                              <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{5}" required class="form-control text-center" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="eg. 01xxxxxxxxx">
                           </div>
                           <br>
                           <p class="text-center text-white">By clicking confirm, you are accepting our terms and conditions</p>
+                          <input type="hidden" id="book6" value="<%= books[0][0] %>"> 
+                          <input type="hidden" id="buyer6" value="<%= books[0][1] %>">
+                          <input type="hidden" id="seller6" value="<%= books[0][2] %>">
+                          <input type="hidden" id="price6" value="<%=price%>">
                           <button class="btn123 fw-bolder text-white" type="reset">CANCLE</button>
                           <button class="btn123 fw-bolder" type="submit">CONFIRM</button>
                       </form>
@@ -246,6 +354,172 @@
           </div>
       </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    document.getElementById('myForm1').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const bookID = parseInt(document.getElementById('book1').value,10); 
+      const buyerID= parseInt(document.getElementById('buyer1').value,10);
+      const sellerID = parseInt(document.getElementById('seller1').value,10); 
+      const price = parseInt(document.getElementById('price1').value,10);
+
+      axios.post('/buy', { bookID: bookID,buyerID:buyerID, sellerID: sellerID,price:price })
+          .then(function(response) {
+              if (response.data.success) {
+                  // API request successful, you can handle the response here
+                  // Example: alert('Book removed successfully!');
+                  alert('Payment Successful');
+                  window.location.href='/cart';
+              } else {
+                  alert('Failed to remove the book. Please try again.');
+              }
+          })
+          .catch(function(error) {
+              alert('Failed to remove the book. Please try again.');
+          });
+    });
+
+    document.getElementById('myForm2').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const bookID = parseInt(document.getElementById('book2').value,10); 
+      const buyerID= parseInt(document.getElementById('buyer2').value,10);
+      const sellerID = parseInt(document.getElementById('seller2').value,10); 
+      const price = parseInt(document.getElementById('price2').value,10);
+
+      axios.post('/buy', { bookID: bookID,buyerID:buyerID, sellerID: sellerID,price:price })
+          .then(function(response) {
+              if (response.data.success) {
+                  // API request successful, you can handle the response here
+                  // Example: alert('Book removed successfully!');
+                  alert('Payment Successful');
+                  window.location.href='/cart';
+              } else {
+                  alert('Failed to remove the book. Please try again.');
+              }
+          })
+          .catch(function(error) {
+              alert('Failed to remove the book. Please try again.');
+          });
+    });
+
+    document.getElementById('myForm3').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const bookID = parseInt(document.getElementById('book3').value,10); 
+      const buyerID= parseInt(document.getElementById('buyer3').value,10);
+      const sellerID = parseInt(document.getElementById('seller3').value,10); 
+      const price = parseInt(document.getElementById('price3').value,10);
+
+      axios.post('/buy', { bookID: bookID,buyerID:buyerID, sellerID: sellerID,price:price })
+          .then(function(response) {
+              if (response.data.success) {
+                  // API request successful, you can handle the response here
+                  // Example: alert('Book removed successfully!');
+                  alert('Payment Successful');
+                  window.location.href='/cart';
+              } else {
+                  alert('Failed to remove the book. Please try again.');
+              }
+          })
+          .catch(function(error) {
+              alert('Failed to remove the book. Please try again.');
+          });
+    });
+
+    document.getElementById('myForm4').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const bookID = parseInt(document.getElementById('book4').value,10); 
+      const buyerID= parseInt(document.getElementById('buyer4').value,10);
+      const sellerID = parseInt(document.getElementById('seller4').value,10); 
+      const price = parseInt(document.getElementById('price4').value,10);
+
+      axios.post('/buy', { bookID: bookID,buyerID:buyerID, sellerID: sellerID,price:price })
+          .then(function(response) {
+              if (response.data.success) {
+                  // API request successful, you can handle the response here
+                  // Example: alert('Book removed successfully!');
+                  alert('Payment Successful');
+                  window.location.href='/cart';
+              } else {
+                  alert('Failed to remove the book. Please try again.');
+              }
+          })
+          .catch(function(error) {
+              alert('Failed to remove the book. Please try again.');
+          });
+    });
+
+    document.getElementById('myForm5').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const bookID = parseInt(document.getElementById('book5').value,10); 
+      const buyerID= parseInt(document.getElementById('buyer5').value,10);
+      const sellerID = parseInt(document.getElementById('seller5').value,10); 
+      const price = parseInt(document.getElementById('price5').value,10);
+
+      axios.post('/buy', { bookID: bookID,buyerID:buyerID, sellerID: sellerID,price:price })
+          .then(function(response) {
+              if (response.data.success) {
+                  // API request successful, you can handle the response here
+                  // Example: alert('Book removed successfully!');
+                  alert('Payment Successful');
+                  window.location.href='/cart';
+              } else {
+                  alert('Failed to remove the book. Please try again.');
+              }
+          })
+          .catch(function(error) {
+              alert('Failed to remove the book. Please try again.');
+          });
+    });
+
+    document.getElementById('myForm6').addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const bookID = parseInt(document.getElementById('book6').value,10); 
+      const buyerID= parseInt(document.getElementById('buyer6').value,10);
+      const sellerID = parseInt(document.getElementById('seller6').value,10); 
+      const price = parseInt(document.getElementById('price6').value,10);
+
+      axios.post('/buy', { bookID: bookID,buyerID:buyerID, sellerID: sellerID,price:price })
+          .then(function(response) {
+              if (response.data.success) {
+                  // API request successful, you can handle the response here
+                  // Example: alert('Book removed successfully!');
+                  alert('Payment Successful');
+                  window.location.href='/cart';
+              } else {
+                  alert('Failed to remove the book. Please try again.');
+              }
+          })
+          .catch(function(error) {
+              alert('Failed to remove the book. Please try again.');
+          });
+    });
+
+  </script>
+  <script>
+      const imageContainers = document.querySelectorAll('.image-container');
+
+      imageContainers.forEach((container) => {
+          const img = container.querySelector('img');
+          const defaultImage = container.querySelector('.default-image');
+
+          img.addEventListener('load', () => {
+              if (!img.complete || img.naturalWidth <50 ) {
+                  defaultImage.style.display = 'block';
+                  img.style.display = 'none';
+              }
+          });
+          img.addEventListener('error', () => {
+              defaultImage.style.display = 'block';
+              img.style.display = 'none';
+          });
+      });
+  </script>
   <script>
       function nagad(){
           const nagad=document.getElementById('nagad');
