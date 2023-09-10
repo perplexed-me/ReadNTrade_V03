@@ -21,9 +21,10 @@
     </div>
 
     <script>
-        let accusedID, reporterID;
+        let accused_id, reporter_id;
 
         function fetchReports() {
+            
             fetch('/admin/reports')
                 .then(response => response.json())
                 .then(data => {
@@ -32,16 +33,16 @@
                     reportsDiv.innerHTML = '';
 
                     data.forEach(report => {
-                        accusedID = report[1];
-                        reporterID = report[2];
+                        accused_id = report[1];
+                        reporter_id = report[2];
 
                         const reportDiv = document.createElement('div');
                         reportDiv.innerHTML = `
-                    Reported User: ${accusedID}, 
-                    Reporter: ${reporterID}, 
+                    Reported User: ${accused_id}, 
+                    Reporter: ${reporter_id}, 
                     Cause: ${report[3]}
-                    <button onclick="sendWarning(${accusedID})">Send Warning</button>
-                    <button onclick="removeReport(${accusedID},${reporterID})">Remove</button>
+                    <button onclick="sendWarning(${accused_id})">Send Warning</button>
+                    <button onclick="removeReport(${accused_id},${reporter_id})">Remove</button>
                 `;
                         reportsDiv.appendChild(reportDiv);
                     });
@@ -65,17 +66,17 @@
         }
 
 
-        function sendWarning(accusedId) {
+        function sendWarning(accused_id) {
             fetch('/admin/sendWarning', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ accusedID: accusedId })
+                body: JSON.stringify({ accusedID: accused_id })
             })
                 .then(response => {
                     if (response.ok) {
-                        showNotification(`Warning sent successfully to ${accusedID} !`);
+                        showNotification(`Warning sent successfully to ${accused_id} !`);
                     } else {
                         throw new Error('Failed to send warning');
                     }

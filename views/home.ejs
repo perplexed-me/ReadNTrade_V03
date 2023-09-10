@@ -211,8 +211,14 @@
                   Hi <span class="user-name">
                     <%= userName %>
                   </span>!
+                  <% if (isReported == 1) { %>
+                    <h5 style="color: red;">You have been reported !!!</h5>
+                <% } %>
+            
+                
 
                 </div>
+
                 <% } %>
 
       </div>
