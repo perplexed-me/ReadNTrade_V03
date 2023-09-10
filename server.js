@@ -181,10 +181,17 @@ app.post('/signup', async (req, res) => {
 
     const { email, password } = req.body;
     try {
-        const query0 = `SELECT MAX(userId) FROM users`;
-        const result0 = await runQuery(query0, []);
-        const cnt = result0[0][0] + 1;
-
+        const connection = await connectionPool.getConnection();
+        const bindParams2={
+            reslt2: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const query2=`DECLARE
+                        BEGIN
+                            :reslt2 := GetMaxUserID();
+                        END;`;
+        const  maxUser= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const result2= await connection.execute(query2,bindParams2,maxUser);
+        const cnt = result2.outBinds.reslt2 + 1;
         const query = `INSERT INTO users (userid, email, password) VALUES (:cnt, :email, :password)`;
 
         await runQuery(query, [cnt, email, password]);
@@ -233,7 +240,7 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
 app.get('/profile', async (req, res) => {
     try {
         let userID = req.session.user.userID;
-        let userName = req.session.user.userName;
+        let userName = req.session.user.userName; 
 
         const bindParams = {
             UserID: { val: userID, type: oracledb.NUMBER }
@@ -519,15 +526,42 @@ app.post('/add', async (req, res) => {
         discount = discount / 100.0;
         const connection = await connectionPool.getConnection();
         // const query1 = SELECT CATEGORY,SUBCATEGORY,BRAND FROM PRODUCTS;
-        const query1 = `SELECT MAX(bookID) AS highestBookID FROM Books`;
-        const query2 = `SELECT MAX(publisherID) AS highestPublisherID FROM Publishers`;
-        const query3 = `SELECT MAX(authorID) AS highestAuthorID FROM Authors`;
-        let BOOKID = await connection.execute(query1);
-        let PUBLISHERID = await connection.execute(query2);
-        let AUTHORID = await connection.execute(query3);
-        let bookId = BOOKID.rows[0][0] + 1;
-        let publisherID = PUBLISHERID.rows[0][0] + 1;
-        let authorID = AUTHORID.rows[0][0] + 1;
+        const bindParams1={
+            reslt1: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const bindParams2={
+            reslt2: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const bindParams3={
+            reslt3: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const query1 = `DECLARE
+                            count1 NUMBER;
+                        BEGIN
+                            MAXBOOKID(count1);
+                            :reslt1 := count1;
+                        END;`;
+        const query2 = `DECLARE
+                            count2 NUMBER;
+                        BEGIN
+                            MAXPUBLISHERID(count2);
+                            :reslt2 := count2;
+                        END;`;
+        const query3 = `DECLARE
+                            count3 NUMBER;
+                        BEGIN
+                            MAXAUTHORID(count3);
+                            :reslt3 := count3;
+                        END;`;
+        const  maxBook= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const  maxPub= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const  maxAuth= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        let BOOKID = await connection.execute(query1,bindParams1,maxBook);
+        let PUBLISHERID = await connection.execute(query2,bindParams2,maxPub);
+        let AUTHORID = await connection.execute(query3,bindParams3,maxAuth);
+        let bookId = BOOKID.outBinds.reslt1 + 1;
+        let publisherID = PUBLISHERID.outBinds.reslt2 + 1;
+        let authorID = AUTHORID.outBinds.reslt3 + 1;
         const bindParams4 = {
             AuthorID: { val: authorID, type: oracledb.NUMBER },
             Author: { val: author, type: oracledb.STRING }
@@ -828,7 +862,7 @@ app.post('/payment',async(req,res)=>{
             UserID: { val: userID, type: oracledb.NUMBER },
             SellerID: { val: sellerID, type: oracledb.NUMBER },
             BookID: { val: bookID, type: oracledb.NUMBER },
-        };
+        }; 
         //new
         const query = `
             SELECT 
@@ -868,12 +902,19 @@ app.post('/buy',async(req,res)=>{
         const bindParams1={
             BuyerID: { val: buyerID, type: oracledb.NUMBER },
         };
+        const bindParams2={
+            reslt2: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
         const query1=`SELECT locationID FROM USERS WHERE userID=:BuyerID`;
         const result1 = await connection.execute(query1, bindParams1); 
-        const query2=`SELECT MAX(orderID) FROM ORDERS`;
-        const result2= await connection.execute(query2);
-        console.log(result2); 
-        const orderID= result2.rows[0][0]+1;    
+        const query2=`DECLARE
+                        BEGIN
+                            :reslt2 := GetMaxOrderID();
+                        END;`;
+        const  maxOrder= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const result2= await connection.execute(query2,bindParams2,maxOrder);
+        console.log(result2.outBinds.reslt2); 
+        const orderID= result2.outBinds.reslt2+1;    
         const bindParams = {
             OrderID:{val: orderID, type: oracledb.NUMBER},
             BookID :{val: bookID, type: oracledb.NUMBER},
