@@ -1,0 +1,157 @@
+.paymargin{
+    margin-right: 60px;
+}
+.nagadcover{
+    background-color: #ec1c24;
+    width: 100%;
+}
+.bkashcover{
+    background-color: #e2136e;
+    width: 100%;
+}
+.rocketcover{
+    background-color: rgb(131, 6, 131);
+    width: 100%;
+}
+.upaycover{
+    background-color: rgb(44, 44, 194);
+    width: 100%;
+}
+.surecashcover{
+    background-color: yellow;
+    width: 100%;
+}
+.mcashcover{
+    background-color: #279b37;
+    width: 100%;
+}
+.nagad{
+    height: 56px;
+    width: 120px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    margin-right: 32px;
+    background-color: #ec1c24;
+    color: #f6921e;
+}
+
+.bkash{
+    height: 56px;
+    width: 120px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    margin-right: 32px;
+    background-color: #e2136e;
+    color: white;
+}
+
+.rocket{
+    height: 56px;
+    width: 120px;
+    margin-top: 32px;
+    margin-bottom: 32px;
+    background-color: rgb(205, 10, 205);
+    color: white;
+}
+
+.upay{
+    height: 56px;
+    width: 120px;
+    margin-right: 32px;
+    background-color: rgb(44, 44, 194);
+    color: yellow;
+}
+.surecash{
+    height: 56px;
+    width: 120px;
+    margin-right: 32px;
+    background-color: yellow;
+    color: rgb(44, 44, 194);
+}
+
+.mcash{
+    height: 56px;
+    width: 120px;
+    background-color: rgb(30, 116, 30);
+    color: white;
+}
+
+.row123{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+
+.btn123{
+    background-color:  rgb(230, 224, 224);
+    border: none;
+    margin:0cap;
+    justify-content: left;
+    height: 25px;
+    width: 160px;
+}
+
+.btn2123{
+    background-color: rgb(237, 203, 79);
+    border: none;
+    margin:0cap;
+    justify-content: left;
+    height: 25px;
+    width: 160px;
+}
+.bkashpage{
+    margin-top: 60px;
+    width: 350px;
+}
+.nagadpage{
+    margin-top: 60px;
+    width: 350px;
+}
+.rocketpage{
+    margin-top: 60px;
+    width: 350px;
+}
+.upaypage{
+    margin-top: 60px;
+    width: 350px;
+}
+.surecashpage{
+    margin-top: 60px;
+    width: 350px;
+}
+.mcashpage{
+    margin-top: 60px;
+    width: 350px;
+}
+.bkashwhite{
+    margin-left: 0%;
+    background-color: white; 
+}
+
+.nagadwhite{
+    margin-left: 0%;
+    background-color: #f6921e; 
+}
+.rocketwhite{
+    margin-left: 0%;
+    background-color: white;
+    color: rgb(131, 6, 131); 
+}
+
+.upaywhite{
+    margin-left: 0%;
+    background-color: white;
+    color: rgb(44, 44, 194); 
+}
+
+.surecashwhite{
+    margin-left: 0%;
+    background-color: white;
+    color: rgb(44, 44, 194); 
+}
+
+.mcashwhite{
+    margin-left: 0%;
+    background-color: white;
+    color: #279b37; 
+}

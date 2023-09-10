@@ -5,12 +5,12 @@ const oracledb = require('oracledb');
 const cors = require('cors');
 const session = require('express-session');
 const { Server } = require('socket.io');
-
+const axios = require('axios');
 
 const dbConfig = {
     user: 'ReadNTrade',
-    password: 'hr',
-    connectString: 'localhost/orclpdb1',
+    password: '12345',
+    connectString: 'LAPTOP-96SS764U/ORCLPDB',
     poolMax: 20,
     poolMin: 10,
     poolIncrement: 2,
@@ -215,10 +215,17 @@ app.post('/signup', async (req, res) => {
 
     const { email, password } = req.body;
     try {
-        const query0 = `SELECT MAX(userId) FROM users`;
-        const result0 = await runQuery(query0, []);
-        const cnt = result0[0][0] + 1;
-
+        const connection = await connectionPool.getConnection();
+        const bindParams2={
+            reslt2: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const query2=`DECLARE
+                        BEGIN
+                            :reslt2 := GetMaxUserID();
+                        END;`;
+        const  maxUser= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const result2= await connection.execute(query2,bindParams2,maxUser);
+        const cnt = result2.outBinds.reslt2 + 1;
         const query = `INSERT INTO users (userid, email, password) VALUES (:cnt, :email, :password)`;
 
         await runQuery(query, [cnt, email, password]);
@@ -254,7 +261,7 @@ app.get('/signup', (req, res) => {
 app.get('/profile', isAuthenticated, async (req, res) => {
     try {
         let userID = req.session.user.userID;
-        let userName = req.session.user.userName;
+        let userName = req.session.user.userName; 
 
         const bindParams = {
             UserID: { val: userID, type: oracledb.NUMBER }
@@ -524,7 +531,7 @@ app.post('/add', async (req, res) => {
         const author = req.body.Author;
         const publisher = req.body.Publisher;
         const Year1 = req.body.Year;
-        const year = parseInt(Year1, 10)
+        const year = parseInt(Year1, 10);
         const Price1 = req.body.Price;
         const price = parseInt(Price1, 10);
         const Discount1 = req.body.Discount;
@@ -532,15 +539,42 @@ app.post('/add', async (req, res) => {
         discount = discount / 100.0;
         const connection = await connectionPool.getConnection();
         // const query1 = SELECT CATEGORY,SUBCATEGORY,BRAND FROM PRODUCTS;
-        const query1 = `SELECT MAX(bookID) AS highestBookID FROM Books`;
-        const query2 = `SELECT MAX(publisherID) AS highestPublisherID FROM Publishers`;
-        const query3 = `SELECT MAX(authorID) AS highestAuthorID FROM Authors`;
-        let BOOKID = await connection.execute(query1);
-        let PUBLISHERID = await connection.execute(query2);
-        let AUTHORID = await connection.execute(query3);
-        let bookId = BOOKID.rows[0][0] + 1;
-        let publisherID = PUBLISHERID.rows[0][0] + 1;
-        let authorID = AUTHORID.rows[0][0] + 1;
+        const bindParams1={
+            reslt1: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const bindParams2={
+            reslt2: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const bindParams3={
+            reslt3: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const query1 = `DECLARE
+                            count1 NUMBER;
+                        BEGIN
+                            MAXBOOKID(count1);
+                            :reslt1 := count1;
+                        END;`;
+        const query2 = `DECLARE
+                            count2 NUMBER;
+                        BEGIN
+                            MAXPUBLISHERID(count2);
+                            :reslt2 := count2;
+                        END;`;
+        const query3 = `DECLARE
+                            count3 NUMBER;
+                        BEGIN
+                            MAXAUTHORID(count3);
+                            :reslt3 := count3;
+                        END;`;
+        const  maxBook= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const  maxPub= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const  maxAuth= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        let BOOKID = await connection.execute(query1,bindParams1,maxBook);
+        let PUBLISHERID = await connection.execute(query2,bindParams2,maxPub);
+        let AUTHORID = await connection.execute(query3,bindParams3,maxAuth);
+        let bookId = BOOKID.outBinds.reslt1 + 1;
+        let publisherID = PUBLISHERID.outBinds.reslt2 + 1;
+        let authorID = AUTHORID.outBinds.reslt3 + 1;
         const bindParams4 = {
             AuthorID: { val: authorID, type: oracledb.NUMBER },
             Author: { val: author, type: oracledb.STRING }
@@ -669,7 +703,6 @@ app.get('/cart', isAuthenticated, async (req, res) => {
         AS SELLER_FULL_NAME
         FROM CART C WHERE BUYERID=:UserID
         `;
-
         const result = await connection.execute(query, bindParams);
         // console.log(result.rows)
         res.render('cart', {
@@ -883,17 +916,18 @@ app.delete('/admin/removeReport/:accusedID/:reporterID', async (req, res) => {
 //############################################################
 //                PAYMENT
 //############################################################
-app.get('/payment', isAuthenticated, async (req, res) => {
+app.post('/payment', isAuthenticated, async (req, res) => {
     try {
         const userID = req.session.user.userID;
-        const sellerID = req.body.sellerID;
-        const bookID = req.body.bookID;
+        const sellerID = parseInt(req.body.sellerID,10);
+        const bookID = parseInt(req.body.bookID,10);
         const connection = await connectionPool.getConnection();
         const bindParams = {
             UserID: { val: userID, type: oracledb.NUMBER },
             SellerID: { val: sellerID, type: oracledb.NUMBER },
             BookID: { val: bookID, type: oracledb.NUMBER },
-        };
+        }; 
+        //new
         const query = `
             SELECT 
             C.BOOKID,
@@ -908,10 +942,12 @@ app.get('/payment', isAuthenticated, async (req, res) => {
             (SELECT S.DISCOUNT FROM SELLS S WHERE S.BOOKID = C.BOOKID AND S.SELLERID 
             = C.SELLERID) AS DISCOUNT,
             (SELECT U.FIRSTNAME ||' '|| U.LASTNAME FROM USERS U WHERE U.USERID = C.SELLERID) 
-            AS SELLER_FULL_NAME
+            AS SELLER_FULL_NAME,
+            (SELECT B.MEDIUMIMAGEURL FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS BOOK_IMG
             FROM CART C WHERE C.BUYERID=:UserID AND C.SELLERID= :SellerID AND C.BOOKID=:BookID
             `;
         const result = await connection.execute(query, bindParams);
+        console.log(result.rows);
         // console.log(result.rows)
         res.render('payment', {
             books: result.rows,
@@ -921,6 +957,48 @@ app.get('/payment', isAuthenticated, async (req, res) => {
     }
 });
 
+app.post('/buy',async(req,res)=>{
+   try {
+        const bookID = req.body.bookID;
+        const sellerID = req.body.sellerID;
+        const buyerID = req.body.buyerID;
+        const price= req.body.price;
+        const connection = await connectionPool.getConnection();
+        const bindParams1={
+            BuyerID: { val: buyerID, type: oracledb.NUMBER },
+        };
+        const bindParams2={
+            reslt2: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+        }
+        const query1=`SELECT locationID FROM USERS WHERE userID=:BuyerID`;
+        const result1 = await connection.execute(query1, bindParams1); 
+        const query2=`DECLARE
+                        BEGIN
+                            :reslt2 := GetMaxOrderID();
+                        END;`;
+        const  maxOrder= { outFormat: oracledb.OUT_FORMAT_OBJECT };
+        const result2= await connection.execute(query2,bindParams2,maxOrder);
+        console.log(result2.outBinds.reslt2); 
+        const orderID= result2.outBinds.reslt2+1;    
+        const bindParams = {
+            OrderID:{val: orderID, type: oracledb.NUMBER},
+            BookID :{val: bookID, type: oracledb.NUMBER},
+            BuyerID: { val: buyerID, type: oracledb.NUMBER },
+            SellerID :{val: sellerID, type: oracledb.NUMBER},
+            LocationID:{val: result1.rows[0][0], type: oracledb.NUMBER},
+            Price :{val: price, type: oracledb.NUMBER}
+        };
+        const query=`INSERT INTO Orders (orderID, sellerID, buyerID, bookID, locationID, price)
+                        VALUES (:OrderID,:SellerID ,:BuyerID,:BookID, :LocationID,:Price)`;
+        const result = await connection.execute(query, bindParams,{autoCommit: true});
+        console.log(result.rows);
+        console.log('tyes');
+        res.json({ success: true, message: 'Book removed successfully' });
+   } catch (err) {
+        console.log(err);
+        res.json({ success: false, message: 'Failed to remove the book' });
+   }
+});
 // User reports another user
 app.post('/report', isAuthenticated, async (req, res) => {
     try {
