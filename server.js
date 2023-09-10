@@ -916,11 +916,11 @@ app.delete('/admin/removeReport/:accusedID/:reporterID', async (req, res) => {
 //############################################################
 //                PAYMENT
 //############################################################
-app.get('/payment', isAuthenticated, async (req, res) => {
+app.post('/payment', isAuthenticated, async (req, res) => {
     try {
         const userID = req.session.user.userID;
-        const sellerID = req.body.sellerID;
-        const bookID = req.body.bookID;
+        const sellerID = parseInt(req.body.sellerID,10);
+        const bookID = parseInt(req.body.bookID,10);
         const connection = await connectionPool.getConnection();
         const bindParams = {
             UserID: { val: userID, type: oracledb.NUMBER },
