@@ -690,7 +690,7 @@ app.get('/cart', isAuthenticated, async (req, res) => {
         query = `
         SELECT 
         C.BOOKID AS BOOK_ID,
-        C.SELLERID AS SELLER_ID,  -- Adding SELLERID to the results
+        C.SELLERID AS SELLER_ID,
         (SELECT B.TITLE FROM BOOKS B WHERE B.BOOKID = C.BOOKID) AS BOOK_NAME,
         (SELECT A.AUTHORNAME FROM AUTHORS A WHERE A.AUTHORID = 
         (SELECT B.AUTHORID FROM BOOKS B WHERE B.BOOKID = C.BOOKID)) AS AUTHOR_NAME,
@@ -709,8 +709,7 @@ app.get('/cart', isAuthenticated, async (req, res) => {
             books: result.rows,
         });
     } catch (error) {
-        console.log('hoi nai')
-
+        console.log('error');
     }
 
 });
@@ -999,7 +998,10 @@ app.post('/buy',async(req,res)=>{
         res.json({ success: false, message: 'Failed to remove the book' });
    }
 });
-// User reports another user
+//############################################################
+//             User reports another user
+//############################################################
+// 
 app.post('/report', isAuthenticated, async (req, res) => {
     try {
         const { adminID, accusedID, reporterID, cause } = req.body;
@@ -1011,22 +1013,19 @@ app.post('/report', isAuthenticated, async (req, res) => {
         );
 
         if (!accusedExists || accusedExists.length === 0) {
-            // The accusedID doesn't exist in the user database
             return res.status(400).json({ error: 'Invalid accusedID' });
         }
 
-        // Next, check if the combination of accusedID and reporterID already exists in the report database
+        
         let existingReport = await runQuery(
             `SELECT * FROM Report WHERE accusedID = :accusedID AND reporterID = :reporterID`,
             { accusedID, reporterID }
         );
 
         if (existingReport && existingReport.length > 0) {
-            // The combination already exists
             return res.status(409).json({ error: 'Already reported' });
         }
 
-        // If not, insert the new report
         let result = await runQuery(
             `INSERT INTO Report (adminID, accusedID, reporterID, cause) VALUES (:adminID, :accusedID, :reporterID, :cause)`,
             { adminID, accusedID, reporterID, cause }
